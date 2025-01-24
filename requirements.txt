@@ -15,9 +15,12 @@ markdown-it-py==3.0.0
 MarkupSafe==3.0.2
 mdurl==0.1.2
 mysqlclient==2.2.7
+Pillow==10.2.0  # 이미지 처리
 Pygments==2.19.1
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.0
+django-imagekit==5.0.0  # 이미지 리사이징 및 최적화
+django-cleanup==8.0.0  # 이미지 파일 자동 삭제
 python-slugify==8.0.4
 PyYAML==6.0.2
 requests==2.32.3
