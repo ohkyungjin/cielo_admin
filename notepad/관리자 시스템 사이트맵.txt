@@ -1,0 +1,32 @@
+graph TD
+    Login[로그인] --> Dashboard[대시보드]
+    
+    Dashboard --> Reservation[예약 관리]
+    Dashboard --> Service[서비스 관리]
+    Dashboard --> Statistics[통계]
+    Dashboard --> Memorial[추모 관리]
+    Dashboard --> Calendar[캘린더]
+    Dashboard --> Settings[설정]
+    
+    Reservation --> ResList[예약 목록]
+    Reservation --> NewRes[새 예약]
+    
+    NewRes --> Step1[Step1: 보호자]
+    NewRes --> Step2[Step2: 반려동물]
+    NewRes --> Step3[Step3: 예식]
+    NewRes --> Step4[Step4: 확인/서명]
+    
+    Service --> ServiceList[예식 목록]
+    Service --> OptionGroup[옵션 그룹]
+    Service --> Options[옵션 관리]
+    
+    Statistics --> SalesStat[매출 통계]
+    Statistics --> ResStat[예약 통계]
+    Statistics --> CustomerStat[고객 분석]
+    
+    Memorial --> PostList[게시글 목록]
+    Memorial --> NewPost[새 게시글]
+    
+    Settings --> UserMgmt[사용자 관리]
+    Settings --> NotifSettings[알림 설정]
+    Settings --> SystemSettings[시스템 설정]

@@ -1,0 +1,98 @@
+# Information Architecture 상세 명세서
+
+## 1. 메인 네비게이션
+
+### 1.1 대시보드 (/)
+- 예약 현황 요약
+- 오늘의 예약 건수
+- 매출 현황
+- 미처리 알림
+
+### 1.2 예약 관리 (/reservations)
+- 예약 목록 (/reservations/list)
+  - 날짜별 필터
+  - 상태별 필터
+  - 검색 기능
+- 새 예약 (/reservations/new)
+  - Step 1: 보호자 정보 (/reservations/new/guardian)
+  - Step 2: 반려동물 정보 (/reservations/new/pet)
+  - Step 3: 예식 선택 (/reservations/new/service)
+  - Step 4: 확인 및 서명 (/reservations/new/confirm)
+- 예약 상세 (/reservations/:id)
+  - 예약 정보 조회
+  - 상태 변경
+  - PDF 출력
+
+### 1.3 서비스 관리 (/services)
+- 예식 목록 (/services/list)
+  - 예식 추가/수정/삭제
+  - 상태 관리
+- 옵션 그룹 (/services/option-groups)
+  - 그룹 CRUD
+  - 순서 관리
+- 옵션 관리 (/services/options)
+  - 옵션 CRUD
+  - 이미지 관리
+  - 가격 설정
+
+### 1.4 통계 (/statistics)
+- 매출 통계 (/statistics/sales)
+  - 기간별 매출
+  - 서비스별 매출
+- 예약 통계 (/statistics/reservations)
+  - 시간대별 현황
+  - 취소율 분석
+- 고객 분석 (/statistics/customers)
+  - 방문 경로
+  - 지역별 분포
+
+### 1.5 추모 관리 (/memorial)
+- 게시글 목록 (/memorial/posts)
+- 새 게시글 (/memorial/posts/new)
+- 게시글 상세 (/memorial/posts/:id)
+
+### 1.6 캘린더 (/calendar)
+- 월간 보기
+- 주간 보기
+- 일간 보기
+- 일정 필터
+
+### 1.7 설정 (/settings)
+- 사용자 관리 (/settings/users)
+  - 계정 CRUD
+  - 권한 관리
+- 알림 설정 (/settings/notifications)
+  - 템플릿 관리
+  - 발송 설정
+- 시스템 설정 (/settings/system)
+  - 백업 관리
+  - 로그 확인
+
+## 2. 서브 네비게이션
+
+### 2.1 상단 메뉴
+- 알림
+- 프로필
+- 로그아웃
+
+### 2.2 사이드바
+- 메인 메뉴 접근
+- 토글 기능
+- 모바일 반응형
+
+## 3. 접근 권한
+
+### 3.1 슈퍼관리자
+- 모든 기능 접근 가능
+- 사용자 관리
+- 시스템 설정
+
+### 3.2 일반관리자
+- 예약/서비스 관리
+- 통계 조회
+- 추모 관리
+
+### 3.3 직원
+- 예약 조회/처리
+- 캘린더 확인
+- 기본 통계 조회

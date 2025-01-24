@@ -1,0 +1,53 @@
+flowchart TD
+    Start([시작]) --> Login{로그인 상태?}
+    Login -->|No| Auth[로그인/회원가입]
+    Auth --> LoginMethod{로그인 방식}
+    LoginMethod -->|일반| InputCred[아이디/비밀번호 입력]
+    LoginMethod -->|소셜| SocialAuth[카카오/구글 인증]
+    InputCred --> ValidCred{인증 성공?}
+    SocialAuth --> ValidCred
+    ValidCred -->|No| Auth
+    ValidCred -->|Yes| Dashboard
+    Login -->|Yes| Dashboard[대시보드]
+    
+    Dashboard --> Functions{기능 선택}
+    
+    Functions -->|예약 관리| ReservationFlow
+    Functions -->|서비스 관리| ServiceFlow
+    Functions -->|통계| StatsFlow
+    Functions -->|추모 관리| MemorialFlow
+    
+    subgraph ReservationFlow[예약 프로세스]
+        direction TB
+        ResList[예약 목록] --> NewRes[새 예약]
+        NewRes --> Guardian[1. 보호자 정보]
+        Guardian --> Pet[2. 반려동물 정보]
+        Pet --> Service[3. 예식 선택]
+        Service --> Options[옵션 선택]
+        Options --> Price[금액 계산]
+        Price --> Sign[4. 서명]
+        Sign --> Complete[예약 완료]
+        Complete --> Notify[알림 발송]
+    end
+    
+    subgraph ServiceFlow[서비스 관리]
+        direction TB
+        ServiceList[서비스 목록] --> EditService[서비스 수정]
+        EditService --> GroupOpt[옵션 그룹 관리]
+        GroupOpt --> Options2[개별 옵션 관리]
+    end
+    
+    subgraph StatsFlow[통계]
+        direction TB
+        Daily[일간 통계] --> Weekly[주간 통계]
+        Weekly --> Monthly[월간 통계]
+        Monthly --> Custom[커스텀 기간]
+        Custom --> Export[CSV 추출]
+    end
+    
+    subgraph MemorialFlow[추모 관리]
+        direction TB
+        Posts[게시글 목록] --> NewPost[새 게시글]
+        NewPost --> Upload[이미지 업로드]
+        Upload --> Publish[게시]
+    end
