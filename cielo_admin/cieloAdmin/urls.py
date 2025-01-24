@@ -1,8 +1,10 @@
 from django.urls import path
-from . import views
+from .views.views import index
+from .views.auth import login
 
 app_name = 'cieloAdmin'
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', index, name='index'),
+    path('login/', login, name='login'),
 ]

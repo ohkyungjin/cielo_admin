@@ -1,0 +1,171 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>반려동물 장례 서비스 관리자 - 로그인</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Noto Sans KR', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            light: '#9b4d88',
+                            DEFAULT: '#7e396e',
+                            dark: '#612954',
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-5xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden flex">
+            <!-- 로그인 폼 섹션 -->
+            <div class="w-full lg:w-1/2 px-8 py-12 sm:px-12">
+                <div class="max-w-md w-full mx-auto">
+                    <div class="mb-12">
+                        <div class="w-12 h-12 bg-brand/10 rounded-xl flex items-center justify-center mb-8">
+                            <svg class="w-8 h-8 text-brand" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                            </svg>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900">Welcome back</h2>
+                        <p class="mt-2 text-sm text-gray-600">반려동물 장례 서비스 관리자 시스템</p>
+                    </div>
+
+                    <form class="space-y-6" method="post" action="{% url 'cieloAdmin:login' %}">
+                        {% csrf_token %}
+                        
+                        <div class="space-y-5">
+                            <div>
+                                <label for="username" class="block text-sm font-medium text-gray-700">아이디</label>
+                                <div class="mt-1 relative">
+                                    <input id="username" name="username" type="text" required 
+                                        class="appearance-none block w-full px-3 py-3 border border-gray-300 rounded-xl placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm"
+                                        placeholder="아이디를 입력하세요">
+                                </div>
+                                <p id="username-error" class="mt-2 text-sm text-red-600 hidden"></p>
+                            </div>
+
+                            <div>
+                                <label for="password" class="block text-sm font-medium text-gray-700">비밀번호</label>
+                                <div class="mt-1">
+                                    <input id="password" name="password" type="password" required
+                                        class="appearance-none block w-full px-3 py-3 border border-gray-300 rounded-xl placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm"
+                                        placeholder="비밀번호를 입력하세요">
+                                </div>
+                                <p id="password-error" class="mt-2 text-sm text-red-600 hidden"></p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input id="remember" name="remember" type="checkbox"
+                                    class="h-4 w-4 text-brand focus:ring-brand border-gray-300 rounded">
+                                <label for="remember" class="ml-2 block text-sm text-gray-700">
+                                    30일 동안 기억하기
+                                </label>
+                            </div>
+                            <div class="text-sm">
+                                <a href="#" class="font-medium text-brand hover:text-brand-light">
+                                    비밀번호 찾기
+                                </a>
+                            </div>
+                        </div>
+
+                        <div>
+                            <button type="submit"
+                                class="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-brand hover:bg-brand-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand transition duration-150 ease-in-out">
+                                로그인
+                            </button>
+                        </div>
+
+                        <div class="relative my-6">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-gray-300"></div>
+                            </div>
+                            <div class="relative flex justify-center text-sm">
+                                <span class="px-2 bg-white text-gray-500">또는</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <button type="button" onclick="signInWithGoogle()"
+                                class="w-full flex items-center justify-center py-3 px-4 border border-gray-300 rounded-xl shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand transition duration-150 ease-in-out">
+                                <img src="{% static 'cieloAdmin/images/google-icon.svg' %}" alt="Google" class="w-5 h-5 mr-3">
+                                Google 계정으로 로그인
+                            </button>
+                        </div>
+
+                        <div class="text-sm text-center text-gray-600 mt-6">
+                            계정이 없으신가요? 
+                            <a href="#" class="font-medium text-brand hover:text-brand-light">
+                                회원가입
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 이미지 섹션 -->
+            <div class="hidden lg:block lg:w-1/2 relative bg-brand">
+                <div class="absolute inset-0 p-12 text-white flex flex-col justify-between z-10">
+                    <h2 class="text-4xl font-light leading-tight">
+                        반려동물 장례 서비스<br>
+                        관리자 시스템
+                    </h2>
+                </div>
+                <div class="absolute inset-0 bg-gradient-to-br from-brand to-brand-dark mix-blend-multiply"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function signInWithGoogle() {
+            // Google OAuth 로그인 구현
+            console.log('Google login clicked');
+        }
+
+        // 폼 유효성 검사
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            let isValid = true;
+            const username = document.getElementById('username');
+            const password = document.getElementById('password');
+            
+            // 아이디 빈 값 검증
+            if (!username.value.trim()) {
+                const usernameError = document.getElementById('username-error');
+                usernameError.textContent = '아이디를 입력해주세요.';
+                usernameError.classList.remove('hidden');
+                isValid = false;
+            } else {
+                document.getElementById('username-error').classList.add('hidden');
+            }
+            
+            // 비밀번호 검증
+            if (password.value.length < 8) {
+                const passwordError = document.getElementById('password-error');
+                passwordError.textContent = '비밀번호는 8자 이상이어야 합니다.';
+                passwordError.classList.remove('hidden');
+                isValid = false;
+            } else {
+                document.getElementById('password-error').classList.add('hidden');
+            }
+            
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>

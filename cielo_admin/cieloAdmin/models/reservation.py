@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.conf import settings
 from .guardian import Guardian, Pet
 from .ceremony import Ceremony, CeremonyOption
 
@@ -46,6 +47,14 @@ class Reservation(models.Model):
         on_delete=models.PROTECT,
         related_name='reservations',
         verbose_name='예식'
+    )
+    assigned_staff = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='assigned_reservations',
+        verbose_name='담당 직원'
     )
     
     # 예약 상태
@@ -117,15 +126,7 @@ class Reservation(models.Model):
     signature = models.TextField(verbose_name='서명')  # Base64 encoded signature
     signature_date = models.DateTimeField(auto_now_add=True, verbose_name='서명일시')
     
-    # 관리 정보
-    assigned_staff = models.ForeignKey(
-        'user.User',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='assigned_reservations',
-        verbose_name='담당 직원'
-    )
+    # 기타 정보
     memo = models.TextField(blank=True, null=True, verbose_name='관리자 메모')
     
     created_at = models.DateTimeField(auto_now_add=True)
