@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}시엘로펫 관리자{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            light: '#60A5FA', // 밝은 파란색
+                            DEFAULT: '#3B82F6', // 기본 파란색
+                            dark: '#2563EB', // 진한 파란색
+                        },
+                        secondary: {
+                            light: '#9CA3AF',
+                            DEFAULT: '#6B7280',
+                            dark: '#4B5563',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <!-- 모바일/태블릿 사이드바 오버레이 -->
+        <div id="sidebar-overlay" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-20 hidden transition-opacity lg:hidden"></div>
+
+        <!-- 사이드바 -->
+        <aside id="sidebar" class="fixed top-0 left-0 z-30 w-64 h-screen transition-transform -translate-x-full lg:translate-x-0">
+            <div class="h-full px-3 py-4 overflow-y-auto bg-white border-r border-gray-200">
+                <div class="flex items-center justify-between mb-5">
+                    <a href="{% url 'cieloAdmin:index' %}" class="flex items-center">
+                        <img src="/static/images/logo.png" class="h-8" alt="시엘로펫 로고">
+                    </a>
+                    <button type="button" class="lg:hidden text-gray-400 hover:text-gray-500" onclick="toggleSidebar()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                {% include 'cieloAdmin/components/sidebar.html' %}
+            </div>
+        </aside>
+
+        <!-- 메인 콘텐츠 -->
+        <div class="lg:ml-64">
+            {% include 'cieloAdmin/components/navbar.html' %}
+            <main>
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+    <script>
+        // 사이드바 토글 함수
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            
+            if (sidebar.classList.contains('-translate-x-full')) {
+                // 사이드바 열기
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // 스크롤 방지
+            } else {
+                // 사이드바 닫기
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+                document.body.style.overflow = ''; // 스크롤 허용
+            }
+        }
+
+        // 오버레이 클릭 시 사이드바 닫기
+        document.getElementById('sidebar-overlay').addEventListener('click', toggleSidebar);
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

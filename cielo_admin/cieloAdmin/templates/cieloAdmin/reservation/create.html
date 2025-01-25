@@ -1,0 +1,210 @@
+{% extends 'cieloAdmin/base.html' %}
+{% load static %}
+
+{% block title %}예약 생성 - 반려동물 장례 서비스 관리자{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- 페이지 헤더 -->
+    <header class="bg-white shadow">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between">
+                <h1 class="text-2xl font-bold text-gray-900">새 예약</h1>
+                <nav class="flex" aria-label="Progress">
+                    <ol role="list" class="flex items-center space-x-5">
+                        <li>
+                            <div class="flex items-center">
+                                <span class="relative flex h-5 w-5 flex-shrink-0">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand opacity-20"></span>
+                                    <span class="relative inline-flex rounded-full h-5 w-5 bg-brand"></span>
+                                </span>
+                                <span class="ml-3 text-sm font-medium text-brand">보호자 정보</span>
+                            </div>
+                        </li>
+
+                        <li>
+                            <div class="flex items-center">
+                                <span class="relative flex h-5 w-5 flex-shrink-0">
+                                    <span class="inline-flex rounded-full h-5 w-5 bg-gray-200"></span>
+                                </span>
+                                <span class="ml-3 text-sm font-medium text-gray-500">반려동물 정보</span>
+                            </div>
+                        </li>
+
+                        <li>
+                            <div class="flex items-center">
+                                <span class="relative flex h-5 w-5 flex-shrink-0">
+                                    <span class="inline-flex rounded-full h-5 w-5 bg-gray-200"></span>
+                                </span>
+                                <span class="ml-3 text-sm font-medium text-gray-500">예식 선택</span>
+                            </div>
+                        </li>
+
+                        <li>
+                            <div class="flex items-center">
+                                <span class="relative flex h-5 w-5 flex-shrink-0">
+                                    <span class="inline-flex rounded-full h-5 w-5 bg-gray-200"></span>
+                                </span>
+                                <span class="ml-3 text-sm font-medium text-gray-500">최종 확인</span>
+                            </div>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+        <!-- Step 1: 보호자 정보 -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-6 py-8">
+                <form id="guardian-form" class="space-y-8">
+                    <!-- 기본 정보 섹션 -->
+                    <div>
+                        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-6">기본 정보</h3>
+                        <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                            <div class="sm:col-span-3">
+                                <label for="name" class="block text-sm font-medium text-gray-700">이름 <span class="text-red-500">*</span></label>
+                                <div class="mt-1 relative">
+                                    <input type="text" name="name" id="name" required
+                                        class="block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm transition duration-150 ease-in-out"
+                                        placeholder="이름을 입력하세요">
+                                    <div class="invalid-feedback hidden text-red-500 text-sm mt-1">
+                                        이름을 입력해주세요
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-3">
+                                <label for="phone" class="block text-sm font-medium text-gray-700">연락처 <span class="text-red-500">*</span></label>
+                                <div class="mt-1 relative">
+                                    <input type="tel" name="phone" id="phone" required
+                                        class="block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm transition duration-150 ease-in-out"
+                                        pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}" placeholder="010-0000-0000">
+                                    <div class="invalid-feedback hidden text-red-500 text-sm mt-1">
+                                        올바른 연락처 형식으로 입력해주세요
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-6">
+                                <label for="email" class="block text-sm font-medium text-gray-700">이메일 <span class="text-red-500">*</span></label>
+                                <div class="mt-1 relative">
+                                    <input type="email" name="email" id="email" required
+                                        class="block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm transition duration-150 ease-in-out"
+                                        placeholder="example@email.com">
+                                    <div class="invalid-feedback hidden text-red-500 text-sm mt-1">
+                                        올바른 이메일 형식으로 입력해주세요
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 주소 섹션 -->
+                    <div>
+                        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-6">주소 정보</h3>
+                        <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                            <div class="sm:col-span-4">
+                                <label for="address" class="block text-sm font-medium text-gray-700">주소</label>
+                                <div class="mt-1 space-y-2">
+                                    <div class="flex space-x-2">
+                                        <input type="text" name="postcode" id="postcode" readonly
+                                            class="block w-24 px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm"
+                                            placeholder="우편번호">
+                                        <button type="button" onclick="searchAddress()"
+                                            class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand transition duration-150 ease-in-out">
+                                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                            </svg>
+                                            주소 검색
+                                        </button>
+                                    </div>
+                                    <input type="text" name="address" id="address" readonly
+                                        class="block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm"
+                                        placeholder="기본주소">
+                                    <input type="text" name="address_detail" id="address_detail"
+                                        class="block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm transition duration-150 ease-in-out"
+                                        placeholder="상세주소를 입력하세요">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 추가 정보 섹션 -->
+                    <div>
+                        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-6">추가 정보</h3>
+                        <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                            <div class="sm:col-span-3">
+                                <label for="visit_path" class="block text-sm font-medium text-gray-700">방문 경로</label>
+                                <div class="mt-1">
+                                    <select id="visit_path" name="visit_path"
+                                        class="block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm transition duration-150 ease-in-out">
+                                        <option value="">선택해주세요</option>
+                                        <option value="search">인터넷 검색</option>
+                                        <option value="sns">SNS</option>
+                                        <option value="recommendation">지인 추천</option>
+                                        <option value="revisit">재방문</option>
+                                        <option value="other">기타</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-6">
+                                <label for="note" class="block text-sm font-medium text-gray-700">특이사항</label>
+                                <div class="mt-1">
+                                    <textarea id="note" name="note" rows="3"
+                                        class="block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm transition duration-150 ease-in-out resize-none"
+                                        placeholder="특이사항이 있다면 입력해주세요"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 버튼 영역 -->
+                    <div class="pt-5">
+                        <div class="flex justify-end space-x-3">
+                            <button type="button"
+                                class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand transition duration-150 ease-in-out">
+                                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                                </svg>
+                                임시 저장
+                            </button>
+                            <button type="submit"
+                                class="inline-flex justify-center items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-brand hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand transition duration-150 ease-in-out">
+                                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                다음 단계
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+    function searchAddress() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                document.getElementById('postcode').value = data.zonecode;
+                document.getElementById('address').value = data.address;
+                document.getElementById('address_detail').focus();
+            }
+        }).open();
+    }
+
+    // 폼 유효성 검사 및 제출 처리
+    document.getElementById('guardian-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        // TODO: 폼 데이터 검증 및 서버 전송
+        window.location.href = "{% url 'cieloAdmin:reservation_create_pet' %}";
+    });
+</script>
+{% endblock %}

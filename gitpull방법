@@ -1,0 +1,4 @@
+git fetch: 변경 사항 확인
+git status: 현재 상태 확인
+git log --oneline origin/main ^main: 새로운 커밋 확인
+git pull 또는 git pull --rebase: 변경 사항 적용

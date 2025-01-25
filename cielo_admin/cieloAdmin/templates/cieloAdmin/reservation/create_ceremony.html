@@ -1,0 +1,280 @@
+{% extends 'cieloAdmin/base.html' %}
+{% load static %}
+
+{% block title %}예약 생성 - 예식 선택 - 반려동물 장례 서비스 관리자{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- 페이지 헤더 -->
+    <header class="bg-white shadow">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between">
+                <h1 class="text-2xl font-bold text-gray-900">새 예약</h1>
+                <nav class="flex" aria-label="Progress">
+                    <ol role="list" class="flex items-center space-x-5">
+                        <li>
+                            <div class="flex items-center">
+                                <span class="relative flex h-5 w-5 flex-shrink-0">
+                                    <span class="inline-flex rounded-full h-5 w-5 bg-green-500"></span>
+                                    <svg class="h-3 w-3 absolute inset-1 text-white" fill="currentColor" viewBox="0 0 12 12">
+                                        <path d="M3.707 5.293a1 1 0 00-1.414 1.414l1.414-1.414zM5 8l-.707.707a1 1 0 001.414 0L5 8zm4.707-3.293a1 1 0 00-1.414-1.414l1.414 1.414zm-7.414 2l2 2 1.414-1.414-2-2-1.414 1.414zm3.414 2l4-4-1.414-1.414-4 4 1.414 1.414z"/>
+                                    </svg>
+                                </span>
+                                <span class="ml-3 text-sm font-medium text-green-500">보호자 정보</span>
+                            </div>
+                        </li>
+
+                        <li>
+                            <div class="flex items-center">
+                                <span class="relative flex h-5 w-5 flex-shrink-0">
+                                    <span class="inline-flex rounded-full h-5 w-5 bg-green-500"></span>
+                                    <svg class="h-3 w-3 absolute inset-1 text-white" fill="currentColor" viewBox="0 0 12 12">
+                                        <path d="M3.707 5.293a1 1 0 00-1.414 1.414l1.414-1.414zM5 8l-.707.707a1 1 0 001.414 0L5 8zm4.707-3.293a1 1 0 00-1.414-1.414l1.414 1.414zm-7.414 2l2 2 1.414-1.414-2-2-1.414 1.414zm3.414 2l4-4-1.414-1.414-4 4 1.414 1.414z"/>
+                                    </svg>
+                                </span>
+                                <span class="ml-3 text-sm font-medium text-green-500">반려동물 정보</span>
+                            </div>
+                        </li>
+
+                        <li>
+                            <div class="flex items-center">
+                                <span class="relative flex h-5 w-5 flex-shrink-0">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand opacity-20"></span>
+                                    <span class="relative inline-flex rounded-full h-5 w-5 bg-brand"></span>
+                                </span>
+                                <span class="ml-3 text-sm font-medium text-brand">예식 선택</span>
+                            </div>
+                        </li>
+
+                        <li>
+                            <div class="flex items-center">
+                                <span class="relative flex h-5 w-5 flex-shrink-0">
+                                    <span class="inline-flex rounded-full h-5 w-5 bg-gray-200"></span>
+                                </span>
+                                <span class="ml-3 text-sm font-medium text-gray-500">최종 확인</span>
+                            </div>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+        <!-- Step 3: 예식 선택 -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-6 py-8">
+                <form id="ceremony-form" class="space-y-8">
+                    <!-- 예식 패키지 선택 -->
+                    <div>
+                        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-6">예식 패키지 선택</h3>
+                        <div class="grid grid-cols-1 gap-4">
+                            <!-- 기본 예식 -->
+                            <div class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm hover:border-brand flex space-x-3">
+                                <div class="flex-shrink-0">
+                                    <input type="radio" name="ceremony_package" value="basic" class="h-4 w-4 text-brand focus:ring-brand border-gray-300">
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex justify-between">
+                                        <label class="text-sm font-medium text-gray-900">기본 예식</label>
+                                        <span class="text-sm text-gray-500">￦500,000</span>
+                                    </div>
+                                    <p class="text-sm text-gray-500 mt-1">기본적인 장례 서비스와 함께 제공되는 패키지입니다.</p>
+                                </div>
+                            </div>
+
+                            <!-- 고급 예식 -->
+                            <div class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm hover:border-brand flex space-x-3">
+                                <div class="flex-shrink-0">
+                                    <input type="radio" name="ceremony_package" value="premium" class="h-4 w-4 text-brand focus:ring-brand border-gray-300">
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex justify-between">
+                                        <label class="text-sm font-medium text-gray-900">고급 예식</label>
+                                        <span class="text-sm text-gray-500">￦800,000</span>
+                                    </div>
+                                    <p class="text-sm text-gray-500 mt-1">프리미엄 서비스와 고급 용품이 포함된 패키지입니다.</p>
+                                </div>
+                            </div>
+
+                            <!-- 최고급 예식 -->
+                            <div class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm hover:border-brand flex space-x-3">
+                                <div class="flex-shrink-0">
+                                    <input type="radio" name="ceremony_package" value="vip" class="h-4 w-4 text-brand focus:ring-brand border-gray-300">
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex justify-between">
+                                        <label class="text-sm font-medium text-gray-900">최고급 예식</label>
+                                        <span class="text-sm text-gray-500">￦1,200,000</span>
+                                    </div>
+                                    <p class="text-sm text-gray-500 mt-1">VIP를 위한 최상급 서비스와 특별 관리가 포함된 패키지입니다.</p>
+                                </div>
+                            </div>
+
+                            <!-- 호화 예식 -->
+                            <div class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm hover:border-brand flex space-x-3">
+                                <div class="flex-shrink-0">
+                                    <input type="radio" name="ceremony_package" value="luxury" class="h-4 w-4 text-brand focus:ring-brand border-gray-300">
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex justify-between">
+                                        <label class="text-sm font-medium text-gray-900">호화 예식</label>
+                                        <span class="text-sm text-gray-500">￦2,000,000</span>
+                                    </div>
+                                    <p class="text-sm text-gray-500 mt-1">최고급 시설과 서비스, 전담 관리사가 포함된 럭셔리 패키지입니다.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 옵션 그룹 선택 -->
+                    <div>
+                        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-6">추가 옵션 선택</h3>
+                        
+                        <!-- 생화 세트 -->
+                        <div class="mb-6">
+                            <h4 class="text-sm font-medium text-gray-900 mb-4">생화 세트</h4>
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm hover:border-brand flex space-x-3">
+                                    <div class="flex-shrink-0">
+                                        <input type="checkbox" name="flower_options" value="basic_flower" class="h-4 w-4 text-brand focus:ring-brand border-gray-300 rounded">
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex justify-between">
+                                            <label class="text-sm font-medium text-gray-900">기본 생화</label>
+                                            <span class="text-sm text-gray-500">￦100,000</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm hover:border-brand flex space-x-3">
+                                    <div class="flex-shrink-0">
+                                        <input type="checkbox" name="flower_options" value="premium_flower" class="h-4 w-4 text-brand focus:ring-brand border-gray-300 rounded">
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex justify-between">
+                                            <label class="text-sm font-medium text-gray-900">고급 생화</label>
+                                            <span class="text-sm text-gray-500">￦200,000</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 관 세트 -->
+                        <div class="mb-6">
+                            <h4 class="text-sm font-medium text-gray-900 mb-4">관 세트</h4>
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm hover:border-brand flex space-x-3">
+                                    <div class="flex-shrink-0">
+                                        <input type="radio" name="coffin_options" value="basic_coffin" class="h-4 w-4 text-brand focus:ring-brand border-gray-300">
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex justify-between">
+                                            <label class="text-sm font-medium text-gray-900">기본 관</label>
+                                            <span class="text-sm text-gray-500">￦150,000</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm hover:border-brand flex space-x-3">
+                                    <div class="flex-shrink-0">
+                                        <input type="radio" name="coffin_options" value="premium_coffin" class="h-4 w-4 text-brand focus:ring-brand border-gray-300">
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex justify-between">
+                                            <label class="text-sm font-medium text-gray-900">고급 관</label>
+                                            <span class="text-sm text-gray-500">￦300,000</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 무게별 추가 비용 -->
+                    <div>
+                        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-6">무게별 추가 비용</h3>
+                        <div class="rounded-md bg-blue-50 p-4">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3 flex-1 md:flex md:justify-between">
+                                    <p class="text-sm text-blue-700">
+                                        반려동물 무게: <span id="pet-weight" class="font-medium">12kg</span><br>
+                                        추가 비용: <span id="weight-cost" class="font-medium">￦100,000</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 금액 계산 -->
+                    <div class="border-t border-gray-200 pt-8">
+                        <div class="space-y-4">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">예식 패키지</span>
+                                <span class="text-gray-900 font-medium">￦800,000</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">추가 옵션</span>
+                                <span class="text-gray-900 font-medium">￦250,000</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">무게 추가 비용</span>
+                                <span class="text-gray-900 font-medium">￦100,000</span>
+                            </div>
+                            <div class="border-t border-gray-200 pt-4 flex justify-between">
+                                <span class="text-base font-medium text-gray-900">총 금액</span>
+                                <span class="text-base font-medium text-brand">￦1,150,000</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 버튼 영역 -->
+                    <div class="pt-5">
+                        <div class="flex justify-end space-x-3">
+                            <button type="button" onclick="history.back()"
+                                class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
+                                이전
+                            </button>
+                            <button type="button"
+                                class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
+                                임시 저장
+                            </button>
+                            <button type="submit"
+                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-brand hover:bg-brand-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
+                                다음 단계
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // 금액 계산 및 업데이트 함수
+    function updateTotalAmount() {
+        // TODO: 선택된 옵션들의 금액을 계산하고 총액을 업데이트
+    }
+
+    // 폼 제출 처리
+    document.getElementById('ceremony-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        // TODO: 폼 데이터 검증 및 서버 전송
+        window.location.href = "{% url 'cieloAdmin:reservation_create_confirm' %}";
+    });
+
+    // 라디오 버튼과 체크박스의 변경 이벤트 리스너
+    document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
+        input.addEventListener('change', updateTotalAmount);
+    });
+</script>
+{% endblock %}

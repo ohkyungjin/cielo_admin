@@ -1,39 +1,124 @@
 <!-- Sidebar -->
-<div class="hidden md:flex md:flex-shrink-0">
+<div class="flex h-full bg-white">
     <div class="flex flex-col w-64">
-        <div class="flex flex-col h-0 flex-1">
-            <div class="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-                <nav class="mt-5 flex-1 px-2 bg-white space-y-1">
-                    <a href="{% url 'cieloAdmin:index' %}" class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.resolver_match.url_name == 'index' %}text-white bg-indigo-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
-                        <svg class="mr-3 flex-shrink-0 h-6 w-6 {% if request.resolver_match.url_name == 'index' %}text-white{% else %}text-gray-400 group-hover:text-gray-500{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        <!-- Close button - Only visible on mobile -->
+        <div class="lg:hidden px-4 pt-4 pb-2">
+            <button onclick="toggleMobileMenu()" class="flex items-center justify-center w-10 h-10 rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+                <span class="sr-only">메뉴 닫기</span>
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="flex-1 flex flex-col overflow-y-auto">
+            <nav class="flex-1 px-2 py-4 space-y-1">
+                <div class="space-y-4">
+                    <!-- 대시보드 -->
+                    <a href="{% url 'cieloAdmin:index' %}" class="flex items-center p-2 text-base font-normal text-secondary-dark rounded-lg hover:bg-brand-light hover:bg-opacity-10 hover:text-brand-dark group">
+                        <svg class="w-6 h-6 text-secondary-light transition duration-75 group-hover:text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                         </svg>
-                        대시보드
+                        <span class="ml-3">대시보드</span>
                     </a>
 
-                    <a href="#" class="group flex items-center px-2 py-2 text-sm font-medium text-gray-600 rounded-md hover:bg-gray-50 hover:text-gray-900">
-                        <svg class="mr-3 flex-shrink-0 h-6 w-6 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    <!-- 캘린더 -->
+                    <a href="{% url 'cieloAdmin:calendar_index' %}" class="flex items-center p-2 text-base font-normal text-secondary-dark rounded-lg hover:bg-brand-light hover:bg-opacity-10 hover:text-brand-dark group">
+                        <svg class="w-6 h-6 text-secondary-light transition duration-75 group-hover:text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        예약 관리
+                        <span class="ml-3">캘린더</span>
                     </a>
 
-                    <a href="#" class="group flex items-center px-2 py-2 text-sm font-medium text-gray-600 rounded-md hover:bg-gray-50 hover:text-gray-900">
-                        <svg class="mr-3 flex-shrink-0 h-6 w-6 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    <!-- 예약 관리 -->
+                    <div>
+                        <button type="button" class="flex items-center w-full p-2 text-base font-normal text-secondary-dark rounded-lg hover:bg-brand-light hover:bg-opacity-10 hover:text-brand-dark group" aria-controls="reservation-dropdown" data-collapse-toggle="reservation-dropdown">
+                            <svg class="w-6 h-6 text-secondary-light transition duration-75 group-hover:text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span class="flex-1 ml-3 text-left whitespace-nowrap">예약 관리</span>
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <ul id="reservation-dropdown" class="hidden py-2 space-y-2">
+                            <li>
+                                <a href="{% url 'cieloAdmin:reservation_list' %}" class="flex items-center w-full p-2 text-base font-normal text-secondary-dark transition duration-75 rounded-lg pl-11 group hover:bg-brand-light hover:bg-opacity-10 hover:text-brand-dark">예약 목록</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'cieloAdmin:calendar_index' %}" class="flex items-center w-full p-2 text-base font-normal text-secondary-dark transition duration-75 rounded-lg pl-11 group hover:bg-brand-light hover:bg-opacity-10 hover:text-brand-dark">예약 캘린더</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- 서비스 관리 -->
+                    <div>
+                        <button type="button" class="flex items-center w-full p-2 text-base font-normal text-secondary-dark rounded-lg hover:bg-brand-light hover:bg-opacity-10 hover:text-brand-dark group" aria-controls="service-dropdown" data-collapse-toggle="service-dropdown">
+                            <svg class="w-6 h-6 text-secondary-light transition duration-75 group-hover:text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                            </svg>
+                            <span class="flex-1 ml-3 text-left whitespace-nowrap">서비스 관리</span>
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <ul id="service-dropdown" class="hidden py-2 space-y-2">
+                            <li>
+                                <a href="{% url 'cieloAdmin:service_list' %}" class="flex items-center w-full p-2 text-base font-normal text-secondary-dark transition duration-75 rounded-lg pl-11 group hover:bg-brand-light hover:bg-opacity-10 hover:text-brand-dark">서비스 목록</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- 통계 분석 -->
+                    <a href="{% url 'cieloAdmin:statistics_index' %}" class="flex items-center p-2 text-base font-normal text-secondary-dark rounded-lg hover:bg-brand-light hover:bg-opacity-10 hover:text-brand-dark group">
+                        <svg class="w-6 h-6 text-secondary-light transition duration-75 group-hover:text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                         </svg>
-                        서비스 관리
+                        <span class="ml-3">통계 분석</span>
                     </a>
 
-                    <a href="#" class="group flex items-center px-2 py-2 text-sm font-medium text-gray-600 rounded-md hover:bg-gray-50 hover:text-gray-900">
-                        <svg class="mr-3 flex-shrink-0 h-6 w-6 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <!-- 추모 관리 -->
+                    <a href="{% url 'cieloAdmin:memorial_list' %}" class="flex items-center p-2 text-base font-normal text-secondary-dark rounded-lg hover:bg-brand-light hover:bg-opacity-10 hover:text-brand-dark group">
+                        <svg class="w-6 h-6 text-secondary-light transition duration-75 group-hover:text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                         </svg>
-                        설정
+                        <span class="ml-3">추모 관리</span>
                     </a>
-                </nav>
-            </div>
+
+                    <!-- 사용자 관리 -->
+                    <a href="{% url 'cieloAdmin:user_list' %}" class="flex items-center p-2 text-base font-normal text-secondary-dark rounded-lg hover:bg-brand-light hover:bg-opacity-10 hover:text-brand-dark group">
+                        <svg class="w-6 h-6 text-secondary-light transition duration-75 group-hover:text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        <span class="ml-3">사용자 관리</span>
+                    </a>
+
+                    <!-- 알림 관리 -->
+                    <a href="{% url 'cieloAdmin:notification_list' %}" class="flex items-center p-2 text-base font-normal text-secondary-dark rounded-lg hover:bg-brand-light hover:bg-opacity-10 hover:text-brand-dark group">
+                        <svg class="w-6 h-6 text-secondary-light transition duration-75 group-hover:text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        <span class="ml-3">알림 관리</span>
+                    </a>
+
+                    <!-- 로그 관리 -->
+                    <a href="{% url 'cieloAdmin:log_index' %}" class="flex items-center p-2 text-base font-normal text-secondary-dark rounded-lg hover:bg-brand-light hover:bg-opacity-10 hover:text-brand-dark group">
+                        <svg class="w-6 h-6 text-secondary-light transition duration-75 group-hover:text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span class="ml-3">로그 관리</span>
+                    </a>
+
+                    <!-- 시스템 설정 -->
+                    <a href="{% url 'cieloAdmin:settings_index' %}" class="flex items-center p-2 text-base font-normal text-secondary-dark rounded-lg hover:bg-brand-light hover:bg-opacity-10 hover:text-brand-dark group">
+                        <svg class="w-6 h-6 text-secondary-light transition duration-75 group-hover:text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span class="ml-3">시스템 설정</span>
+                    </a>
+                </div>
+            </nav>
         </div>
     </div>
 </div>

@@ -1,0 +1,251 @@
+{% extends 'cieloAdmin/base.html' %}
+{% load static %}
+
+{% block title %}통계 분석 - 반려동물 장례 서비스 관리자{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- 페이지 헤더 -->
+    <header class="bg-white shadow">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                통계 분석
+            </h2>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <!-- 필터 섹션 -->
+        <div class="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6 mb-6">
+            <div class="md:grid md:grid-cols-4 md:gap-6">
+                <div class="md:col-span-1">
+                    <h3 class="text-lg font-medium leading-6 text-gray-900">기간 설정</h3>
+                    <p class="mt-1 text-sm text-gray-500">
+                        분석할 기간을 선택해주세요.
+                    </p>
+                </div>
+                <div class="mt-5 md:mt-0 md:col-span-3">
+                    <div class="grid grid-cols-6 gap-6">
+                        <div class="col-span-6 sm:col-span-3">
+                            <label for="start_date" class="block text-sm font-medium text-gray-700">시작일</label>
+                            <input type="date" name="start_date" id="start_date"
+                                class="mt-1 focus:ring-brand focus:border-brand block w-full shadow-sm sm:text-sm border-gray-300 rounded-lg">
+                        </div>
+
+                        <div class="col-span-6 sm:col-span-3">
+                            <label for="end_date" class="block text-sm font-medium text-gray-700">종료일</label>
+                            <input type="date" name="end_date" id="end_date"
+                                class="mt-1 focus:ring-brand focus:border-brand block w-full shadow-sm sm:text-sm border-gray-300 rounded-lg">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 통계 카드 -->
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <!-- 총 매출 -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <svg class="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">
+                                    총 매출
+                                </dt>
+                                <dd class="flex items-baseline">
+                                    <div class="text-2xl font-semibold text-gray-900">
+                                        ￦45,600,000
+                                    </div>
+                                    <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
+                                        <svg class="self-center flex-shrink-0 h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                            <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                        </svg>
+                                        <span class="sr-only">증가</span>
+                                        12%
+                                    </div>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 예약 건수 -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <svg class="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">
+                                    예약 건수
+                                </dt>
+                                <dd class="flex items-baseline">
+                                    <div class="text-2xl font-semibold text-gray-900">
+                                        38건
+                                    </div>
+                                    <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
+                                        <svg class="self-center flex-shrink-0 h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                            <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                        </svg>
+                                        <span class="sr-only">증가</span>
+                                        5%
+                                    </div>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 평균 객단가 -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <svg class="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">
+                                    평균 객단가
+                                </dt>
+                                <dd class="flex items-baseline">
+                                    <div class="text-2xl font-semibold text-gray-900">
+                                        ￦1,200,000
+                                    </div>
+                                    <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
+                                        <svg class="self-center flex-shrink-0 h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                            <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                        </svg>
+                                        <span class="sr-only">증가</span>
+                                        8%
+                                    </div>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 차트 섹션 -->
+        <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <!-- 매출 추이 차트 -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">매출 추이</h3>
+                        <div class="flex items-center">
+                            <span class="relative z-0 inline-flex shadow-sm rounded-lg">
+                                <button type="button" class="relative inline-flex items-center px-4 py-2 rounded-l-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-brand focus:border-brand">
+                                    일간
+                                </button>
+                                <button type="button" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-brand focus:border-brand">
+                                    주간
+                                </button>
+                                <button type="button" class="relative inline-flex items-center px-4 py-2 rounded-r-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-brand focus:border-brand">
+                                    월간
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mt-4" style="height: 300px;">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 서비스별 매출 비중 -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">서비스별 매출 비중</h3>
+                    </div>
+                    <div class="mt-4" style="height: 300px;">
+                        <canvas id="serviceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // 매출 추이 차트
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(revenueCtx, {
+        type: 'line',
+        data: {
+            labels: ['1월', '2월', '3월', '4월', '5월', '6월'],
+            datasets: [{
+                label: '매출',
+                data: [1200, 1900, 1500, 2100, 2400, 2800],
+                borderColor: '#4F46E5',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '￦' + value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // 서비스별 매출 비중 차트
+    const serviceCtx = document.getElementById('serviceChart').getContext('2d');
+    new Chart(serviceCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['기본 예식', '고급 예식', '최고급 예식', '호화 예식'],
+            datasets: [{
+                data: [30, 35, 20, 15],
+                backgroundColor: [
+                    '#4F46E5',
+                    '#818CF8',
+                    '#A5B4FC',
+                    '#C7D2FE'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right'
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

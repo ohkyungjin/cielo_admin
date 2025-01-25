@@ -1,0 +1,208 @@
+{% extends 'cieloAdmin/base.html' %}
+
+{% block content %}
+<div class="p-4 sm:p-6 lg:p-8">
+    <div class="max-w-3xl mx-auto">
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold text-secondary-dark">새 서비스 등록</h1>
+            <p class="mt-1 text-sm text-secondary">필수 항목을 모두 입력해주세요.</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="space-y-8">
+            {% csrf_token %}
+            
+            <!-- 기본 정보 -->
+            <div class="bg-white shadow-sm ring-1 ring-gray-900/5 rounded-lg p-6">
+                <h2 class="text-lg font-semibold text-secondary-dark mb-4">기본 정보</h2>
+                <div class="grid grid-cols-1 gap-6">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-secondary-dark">서비스명 *</label>
+                        <input type="text" name="name" id="name" required
+                            class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm">
+                    </div>
+                    
+                    <div>
+                        <label for="category" class="block text-sm font-medium text-secondary-dark">카테고리 *</label>
+                        <select name="category" id="category" required
+                            class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm">
+                            <option value="">선택해주세요</option>
+                            <option value="basic">기본 화장</option>
+                            <option value="premium">프리미엄 화장</option>
+                            <option value="pickup">픽업 서비스</option>
+                            <option value="etc">기타</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-secondary-dark">서비스 설명 *</label>
+                        <textarea name="description" id="description" rows="4" required
+                            class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 가격 정보 -->
+            <div class="bg-white shadow-sm ring-1 ring-gray-900/5 rounded-lg p-6">
+                <h2 class="text-lg font-semibold text-secondary-dark mb-4">가격 정보</h2>
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div>
+                        <label for="price" class="block text-sm font-medium text-secondary-dark">기본 가격 *</label>
+                        <div class="mt-1 relative rounded-lg shadow-sm">
+                            <input type="number" name="price" id="price" required min="0"
+                                class="block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm"
+                                placeholder="0">
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <span class="text-gray-500 sm:text-sm">원</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="duration" class="block text-sm font-medium text-secondary-dark">소요 시간 (분) *</label>
+                        <div class="mt-1 relative rounded-lg shadow-sm">
+                            <input type="number" name="duration" id="duration" required min="0"
+                                class="block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm"
+                                placeholder="0">
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <span class="text-gray-500 sm:text-sm">분</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 옵션 정보 -->
+            <div class="bg-white shadow-sm ring-1 ring-gray-900/5 rounded-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold text-secondary-dark">추가 옵션</h2>
+                    <button type="button" onclick="addOption()"
+                        class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-lg text-brand bg-brand-light bg-opacity-10 hover:bg-opacity-20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        옵션 추가
+                    </button>
+                </div>
+                <div id="options-container" class="space-y-4">
+                    <!-- 옵션 템플릿 -->
+                    <div class="option-item hidden">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-grow grid grid-cols-1 gap-4 sm:grid-cols-3">
+                                <div>
+                                    <label class="block text-sm font-medium text-secondary-dark">옵션명</label>
+                                    <input type="text" name="option_names[]"
+                                        class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-secondary-dark">추가 가격</label>
+                                    <div class="mt-1 relative rounded-lg shadow-sm">
+                                        <input type="number" name="option_prices[]" min="0"
+                                            class="block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm"
+                                            placeholder="0">
+                                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                            <span class="text-gray-500 sm:text-sm">원</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-secondary-dark">추가 시간</label>
+                                    <div class="mt-1 relative rounded-lg shadow-sm">
+                                        <input type="number" name="option_durations[]" min="0"
+                                            class="block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm"
+                                            placeholder="0">
+                                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                            <span class="text-gray-500 sm:text-sm">분</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" onclick="removeOption(this)"
+                                class="mt-6 inline-flex items-center p-1.5 border border-transparent rounded-lg text-red-600 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 이미지 업로드 -->
+            <div class="bg-white shadow-sm ring-1 ring-gray-900/5 rounded-lg p-6">
+                <h2 class="text-lg font-semibold text-secondary-dark mb-4">서비스 이미지</h2>
+                <div class="grid grid-cols-1 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-secondary-dark">대표 이미지</label>
+                        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
+                            <div class="space-y-1 text-center">
+                                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                <div class="flex text-sm text-gray-600">
+                                    <label for="image" class="relative cursor-pointer rounded-lg font-medium text-brand hover:text-brand-dark focus-within:outline-none">
+                                        <span>이미지 업로드</span>
+                                        <input id="image" name="image" type="file" class="sr-only" accept="image/*">
+                                    </label>
+                                </div>
+                                <p class="text-xs text-gray-500">
+                                    PNG, JPG, GIF up to 10MB
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 버튼 -->
+            <div class="flex justify-end space-x-3">
+                <button type="button" onclick="history.back()"
+                    class="px-4 py-2 text-sm font-medium text-secondary-dark bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
+                    취소
+                </button>
+                <button type="submit"
+                    class="px-4 py-2 text-sm font-medium text-white bg-brand hover:bg-brand-dark rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
+                    서비스 등록
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    function addOption() {
+        const container = document.getElementById('options-container');
+        const template = container.querySelector('.option-item');
+        const newOption = template.cloneNode(true);
+        newOption.classList.remove('hidden');
+        container.appendChild(newOption);
+    }
+
+    function removeOption(button) {
+        const optionItem = button.closest('.option-item');
+        optionItem.remove();
+    }
+
+    // 이미지 미리보기
+    document.getElementById('image').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.createElement('img');
+                preview.src = e.target.result;
+                preview.classList.add('mt-2', 'rounded-lg', 'max-h-48', 'mx-auto');
+                
+                const container = document.querySelector('.text-center');
+                const existingPreview = container.querySelector('img');
+                if (existingPreview) {
+                    existingPreview.remove();
+                }
+                container.appendChild(preview);
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

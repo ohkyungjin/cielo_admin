@@ -26,6 +26,9 @@ module.exports = {
          */
         '../../**/templates/**/*.html',
 
+        /* CieloAdmin app templates */
+        '../../cieloAdmin/templates/**/*.html',
+
         /**
          * JS: If you use Tailwind CSS in JavaScript, uncomment the following lines and make sure
          * patterns match your project structure.
@@ -42,7 +45,13 @@ module.exports = {
         // '../../**/*.py'
     ],
     theme: {
-        extend: {},
+        extend: {
+            colors: {
+                'brand': '#4F46E5',
+                'brand-dark': '#4338CA',
+                'brand-light': '#6366F1',
+            },
+        },
     },
     plugins: [
         /**

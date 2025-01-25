@@ -1,0 +1,250 @@
+{% extends 'cieloAdmin/base.html' %}
+{% load static %}
+
+{% block title %}추모 관리 - 반려동물 장례 서비스 관리자{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- 페이지 헤더 -->
+    <header class="bg-white shadow">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div class="md:flex md:items-center md:justify-between">
+                <div class="flex-1 min-w-0">
+                    <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                        추모 관리
+                    </h2>
+                </div>
+                <div class="mt-4 flex md:mt-0 md:ml-4">
+                    <button type="button" onclick="location.href='{% url 'cieloAdmin:memorial_create' %}'"
+                        class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-brand hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
+                        새 추모 공간 생성
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <!-- 필터 섹션 -->
+        <div class="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6 mb-6">
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-4">
+                <div>
+                    <label for="search" class="block text-sm font-medium text-gray-700">검색</label>
+                    <div class="mt-1">
+                        <input type="text" name="search" id="search" 
+                            class="shadow-sm focus:ring-brand focus:border-brand block w-full sm:text-sm border-gray-300 rounded-lg"
+                            placeholder="반려동물 이름, 보호자 이름">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="status" class="block text-sm font-medium text-gray-700">상태</label>
+                    <select id="status" name="status"
+                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-brand focus:border-brand sm:text-sm rounded-lg">
+                        <option value="">전체</option>
+                        <option value="active">활성</option>
+                        <option value="inactive">비활성</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="start_date" class="block text-sm font-medium text-gray-700">시작일</label>
+                    <input type="date" name="start_date" id="start_date"
+                        class="mt-1 focus:ring-brand focus:border-brand block w-full shadow-sm sm:text-sm border-gray-300 rounded-lg">
+                </div>
+
+                <div>
+                    <label for="end_date" class="block text-sm font-medium text-gray-700">종료일</label>
+                    <input type="date" name="end_date" id="end_date"
+                        class="mt-1 focus:ring-brand focus:border-brand block w-full shadow-sm sm:text-sm border-gray-300 rounded-lg">
+                </div>
+            </div>
+        </div>
+
+        <!-- 추모 공간 목록 -->
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <!-- 추모 공간 카드 1 -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-6">
+                    <div class="flex items-center">
+                        <div class="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
+                            <svg class="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-medium text-gray-900">몽실이의 추모공간</h3>
+                            <p class="text-sm text-gray-500">보호자: 홍길동</p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">생성일</span>
+                            <span class="text-gray-900">2025-01-20</span>
+                        </div>
+                        <div class="flex justify-between text-sm mt-2">
+                            <span class="text-gray-500">방문수</span>
+                            <span class="text-gray-900">128회</span>
+                        </div>
+                        <div class="flex justify-between text-sm mt-2">
+                            <span class="text-gray-500">추모글</span>
+                            <span class="text-gray-900">32개</span>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            활성
+                        </span>
+                    </div>
+                    <div class="mt-4 flex justify-end space-x-3">
+                        <button type="button"
+                            class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
+                            관리
+                        </button>
+                        <button type="button"
+                            class="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-brand hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
+                            보기
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 추모 공간 카드 2 -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-6">
+                    <div class="flex items-center">
+                        <div class="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
+                            <svg class="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-medium text-gray-900">해피의 추모공간</h3>
+                            <p class="text-sm text-gray-500">보호자: 김철수</p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">생성일</span>
+                            <span class="text-gray-900">2025-01-15</span>
+                        </div>
+                        <div class="flex justify-between text-sm mt-2">
+                            <span class="text-gray-500">방문수</span>
+                            <span class="text-gray-900">85회</span>
+                        </div>
+                        <div class="flex justify-between text-sm mt-2">
+                            <span class="text-gray-500">추모글</span>
+                            <span class="text-gray-900">24개</span>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            활성
+                        </span>
+                    </div>
+                    <div class="mt-4 flex justify-end space-x-3">
+                        <button type="button"
+                            class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
+                            관리
+                        </button>
+                        <button type="button"
+                            class="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-brand hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
+                            보기
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 추모 공간 카드 3 -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-6">
+                    <div class="flex items-center">
+                        <div class="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
+                            <svg class="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-medium text-gray-900">초코의 추모공간</h3>
+                            <p class="text-sm text-gray-500">보호자: 이영희</p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">생성일</span>
+                            <span class="text-gray-900">2025-01-10</span>
+                        </div>
+                        <div class="flex justify-between text-sm mt-2">
+                            <span class="text-gray-500">방문수</span>
+                            <span class="text-gray-900">156회</span>
+                        </div>
+                        <div class="flex justify-between text-sm mt-2">
+                            <span class="text-gray-500">추모글</span>
+                            <span class="text-gray-900">45개</span>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                            비활성
+                        </span>
+                    </div>
+                    <div class="mt-4 flex justify-end space-x-3">
+                        <button type="button"
+                            class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
+                            관리
+                        </button>
+                        <button type="button"
+                            class="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-brand hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
+                            보기
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 페이지네이션 -->
+        <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 mt-6 rounded-lg">
+            <div class="flex-1 flex justify-between sm:hidden">
+                <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50">
+                    이전
+                </a>
+                <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50">
+                    다음
+                </a>
+            </div>
+            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-sm text-gray-700">
+                        전체 <span class="font-medium">20</span> 개 중 <span class="font-medium">1</span> 에서 <span class="font-medium">10</span> 까지 표시
+                    </p>
+                </div>
+                <div>
+                    <nav class="relative z-0 inline-flex rounded-lg shadow-sm -space-x-px" aria-label="Pagination">
+                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-lg border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <span class="sr-only">이전</span>
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                        <a href="#" aria-current="page" class="z-10 bg-brand border-brand text-white relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                            1
+                        </a>
+                        <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                            2
+                        </a>
+                        <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                            3
+                        </a>
+                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-lg border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <span class="sr-only">다음</span>
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

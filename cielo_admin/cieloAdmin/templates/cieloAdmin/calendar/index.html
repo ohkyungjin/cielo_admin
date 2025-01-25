@@ -1,0 +1,23 @@
+{% extends "cieloAdmin/base.html" %}
+
+{% block title %}캘린더 - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-semibold text-gray-900">캘린더</h1>
+        <div class="flex space-x-4">
+            <button class="bg-white text-gray-600 px-4 py-2 rounded-md border hover:bg-gray-50">월</button>
+            <button class="bg-white text-gray-600 px-4 py-2 rounded-md border hover:bg-gray-50">주</button>
+            <button class="bg-white text-gray-600 px-4 py-2 rounded-md border hover:bg-gray-50">일</button>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <!-- 캘린더 내용은 추후 구현 -->
+        <div class="min-h-[600px] p-4">
+            <p class="text-gray-500 text-center">캘린더가 곧 구현될 예정입니다.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,211 @@
+{% extends 'cieloAdmin/base.html' %}
+{% load static %}
+
+{% block title %}예약 생성 - 반려동물 정보 - 반려동물 장례 서비스 관리자{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- 페이지 헤더 -->
+    <header class="bg-white shadow">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between">
+                <h1 class="text-2xl font-bold text-gray-900">새 예약</h1>
+                <nav class="flex" aria-label="Progress">
+                    <ol role="list" class="flex items-center space-x-5">
+                        <li>
+                            <div class="flex items-center">
+                                <span class="relative flex h-5 w-5 flex-shrink-0">
+                                    <span class="inline-flex rounded-full h-5 w-5 bg-green-500"></span>
+                                    <svg class="h-3 w-3 absolute inset-1 text-white" fill="currentColor" viewBox="0 0 12 12">
+                                        <path d="M3.707 5.293a1 1 0 00-1.414 1.414l1.414-1.414zM5 8l-.707.707a1 1 0 001.414 0L5 8zm4.707-3.293a1 1 0 00-1.414-1.414l1.414 1.414zm-7.414 2l2 2 1.414-1.414-2-2-1.414 1.414zm3.414 2l4-4-1.414-1.414-4 4 1.414 1.414z"/>
+                                    </svg>
+                                </span>
+                                <span class="ml-3 text-sm font-medium text-green-500">보호자 정보</span>
+                            </div>
+                        </li>
+
+                        <li>
+                            <div class="flex items-center">
+                                <span class="relative flex h-5 w-5 flex-shrink-0">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand opacity-20"></span>
+                                    <span class="relative inline-flex rounded-full h-5 w-5 bg-brand"></span>
+                                </span>
+                                <span class="ml-3 text-sm font-medium text-brand">반려동물 정보</span>
+                            </div>
+                        </li>
+
+                        <li>
+                            <div class="flex items-center">
+                                <span class="relative flex h-5 w-5 flex-shrink-0">
+                                    <span class="inline-flex rounded-full h-5 w-5 bg-gray-200"></span>
+                                </span>
+                                <span class="ml-3 text-sm font-medium text-gray-500">예식 선택</span>
+                            </div>
+                        </li>
+
+                        <li>
+                            <div class="flex items-center">
+                                <span class="relative flex h-5 w-5 flex-shrink-0">
+                                    <span class="inline-flex rounded-full h-5 w-5 bg-gray-200"></span>
+                                </span>
+                                <span class="ml-3 text-sm font-medium text-gray-500">최종 확인</span>
+                            </div>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+        <!-- Step 2: 반려동물 정보 -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-6 py-8">
+                <form id="pet-form" class="space-y-8">
+                    <!-- 기본 정보 섹션 -->
+                    <div>
+                        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-6">기본 정보</h3>
+                        <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                            <div class="sm:col-span-3">
+                                <label for="pet_name" class="block text-sm font-medium text-gray-700">이름 <span class="text-red-500">*</span></label>
+                                <div class="mt-1">
+                                    <input type="text" name="pet_name" id="pet_name" required
+                                        class="shadow-sm focus:ring-brand focus:border-brand block w-full sm:text-sm border-gray-300 rounded-lg">
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-3">
+                                <label for="breed" class="block text-sm font-medium text-gray-700">품종 <span class="text-red-500">*</span></label>
+                                <div class="mt-1">
+                                    <input type="text" name="breed" id="breed" required
+                                        class="shadow-sm focus:ring-brand focus:border-brand block w-full sm:text-sm border-gray-300 rounded-lg">
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-2">
+                                <label for="age" class="block text-sm font-medium text-gray-700">나이</label>
+                                <div class="mt-1">
+                                    <input type="number" name="age" id="age" min="0" max="100"
+                                        class="shadow-sm focus:ring-brand focus:border-brand block w-full sm:text-sm border-gray-300 rounded-lg">
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-2">
+                                <label for="gender" class="block text-sm font-medium text-gray-700">성별</label>
+                                <div class="mt-1">
+                                    <select id="gender" name="gender"
+                                        class="shadow-sm focus:ring-brand focus:border-brand block w-full sm:text-sm border-gray-300 rounded-lg">
+                                        <option value="">선택해주세요</option>
+                                        <option value="male">수컷</option>
+                                        <option value="female">암컷</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-2">
+                                <label for="weight" class="block text-sm font-medium text-gray-700">몸무게 (kg) <span class="text-red-500">*</span></label>
+                                <div class="mt-1">
+                                    <input type="number" name="weight" id="weight" required step="0.1" min="0"
+                                        class="shadow-sm focus:ring-brand focus:border-brand block w-full sm:text-sm border-gray-300 rounded-lg">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 사망 관련 정보 섹션 -->
+                    <div>
+                        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-6">사망 관련 정보</h3>
+                        <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                            <div class="sm:col-span-3">
+                                <label for="death_date" class="block text-sm font-medium text-gray-700">사망일 <span class="text-red-500">*</span></label>
+                                <div class="mt-1">
+                                    <input type="date" name="death_date" id="death_date" required
+                                        class="shadow-sm focus:ring-brand focus:border-brand block w-full sm:text-sm border-gray-300 rounded-lg">
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-3">
+                                <label for="death_cause" class="block text-sm font-medium text-gray-700">사망 경위 <span class="text-red-500">*</span></label>
+                                <div class="mt-1">
+                                    <select id="death_cause" name="death_cause" required
+                                        class="shadow-sm focus:ring-brand focus:border-brand block w-full sm:text-sm border-gray-300 rounded-lg">
+                                        <option value="">선택해주세요</option>
+                                        <option value="natural">자연사</option>
+                                        <option value="disease">병사</option>
+                                        <option value="accident">사고사</option>
+                                        <option value="euthanasia">안락사</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-6">
+                                <div class="flex items-start">
+                                    <div class="flex items-center h-5">
+                                        <input id="death_certificate" name="death_certificate" type="checkbox"
+                                            class="focus:ring-brand h-4 w-4 text-brand border-gray-300 rounded">
+                                    </div>
+                                    <div class="ml-3 text-sm">
+                                        <label for="death_certificate" class="font-medium text-gray-700">장례확인서 발급</label>
+                                        <p class="text-gray-500">장례확인서 발급이 필요한 경우 체크해주세요.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 추가 정보 섹션 -->
+                    <div>
+                        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-6">추가 정보</h3>
+                        <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                            <div class="sm:col-span-6">
+                                <label for="referral_company" class="block text-sm font-medium text-gray-700">경유업체</label>
+                                <div class="mt-1">
+                                    <input type="text" name="referral_company" id="referral_company"
+                                        class="shadow-sm focus:ring-brand focus:border-brand block w-full sm:text-sm border-gray-300 rounded-lg">
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-6">
+                                <label for="special_note" class="block text-sm font-medium text-gray-700">특이사항</label>
+                                <div class="mt-1">
+                                    <textarea id="special_note" name="special_note" rows="3"
+                                        class="shadow-sm focus:ring-brand focus:border-brand block w-full sm:text-sm border-gray-300 rounded-lg"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 버튼 영역 -->
+                    <div class="pt-5">
+                        <div class="flex justify-end space-x-3">
+                            <button type="button" onclick="history.back()"
+                                class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
+                                이전
+                            </button>
+                            <button type="button"
+                                class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
+                                임시 저장
+                            </button>
+                            <button type="submit"
+                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-brand hover:bg-brand-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
+                                다음 단계
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // 폼 유효성 검사 및 제출 처리
+    document.getElementById('pet-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        // TODO: 폼 데이터 검증 및 서버 전송
+        window.location.href = "{% url 'cieloAdmin:reservation_create_ceremony' %}";
+    });
+</script>
+{% endblock %}

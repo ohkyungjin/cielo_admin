@@ -69,7 +69,7 @@ ROOT_URLCONF = "cielo_admin.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / 'cieloAdmin' / 'templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -90,14 +90,22 @@ WSGI_APPLICATION = "cielo_admin.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": os.getenv('DB_ENGINE', 'django.db.backends.sqlite3'),
-        "NAME": os.getenv('DB_NAME', BASE_DIR / "db.sqlite3"),
-        "USER": os.getenv('DB_USER', ''),
-        "PASSWORD": os.getenv('DB_PASSWORD', ''),
-        "HOST": os.getenv('DB_HOST', ''),
-        "PORT": os.getenv('DB_PORT', ''),
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+# 일단 sqlite3를 사용하고 나중에 migrate 하는 것으로 한다.
+# DATABASES = {
+#     "default": {
+#         "ENGINE": os.getenv('DB_ENGINE'),
+#         "NAME": os.getenv('DB_NAME'),
+#         "USER": os.getenv('DB_USER'),
+#         "PASSWORD": os.getenv('DB_PASSWORD'),
+#         "HOST": os.getenv('DB_HOST'),
+#         "PORT": os.getenv('DB_PORT'),
+#     }
+# }
 
 
 # Password validation
