@@ -1,23 +1,303 @@
-{% extends "cieloAdmin/base.html" %}
+{% extends 'cieloAdmin/base.html' %}
+{% load static %}
 
-{% block title %}캘린더 - {{ block.super }}{% endblock %}
+{% block title %}예약 캘린더 - 반려동물 장례 서비스 관리자{% endblock %}
+
+{% block extra_css %}
+<link href='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.10/main.min.css' rel='stylesheet' />
+<style>
+    .fc-header-toolbar {
+        @apply flex-wrap gap-4 !important;
+    }
+    
+    .fc-toolbar-title {
+        @apply text-xl !important;
+    }
+    
+    .fc-button-primary {
+        @apply bg-brand border-brand hover:bg-brand-dark hover:border-brand-dark !important;
+    }
+    
+    .fc-button-primary:disabled {
+        @apply bg-gray-400 border-gray-400 !important;
+    }
+    
+    .fc-event {
+        @apply cursor-pointer transition-transform hover:scale-[1.02] !important;
+    }
+    
+    .fc-daygrid-event {
+        @apply whitespace-normal !important;
+    }
+    
+    .fc-event-time {
+        @apply font-semibold !important;
+    }
+    
+    .fc-list-event-time {
+        @apply font-semibold !important;
+    }
+    
+    .fc-list-event:hover td {
+        @apply bg-brand/5 !important;
+    }
+    
+    @media (max-width: 640px) {
+        .fc-header-toolbar {
+            @apply flex-col items-stretch gap-4 !important;
+        }
+        
+        .fc-toolbar-chunk {
+            @apply flex justify-center !important;
+        }
+        
+        .fc-toolbar-title {
+            @apply text-lg !important;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-semibold text-gray-900">캘린더</h1>
-        <div class="flex space-x-4">
-            <button class="bg-white text-gray-600 px-4 py-2 rounded-md border hover:bg-gray-50">월</button>
-            <button class="bg-white text-gray-600 px-4 py-2 rounded-md border hover:bg-gray-50">주</button>
-            <button class="bg-white text-gray-600 px-4 py-2 rounded-md border hover:bg-gray-50">일</button>
+<div class="p-4 sm:p-6 lg:p-8">
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-secondary-dark">예약 캘린더</h1>
+        <p class="mt-1 text-sm text-secondary">모든 예약을 캘린더 형식으로 확인할 수 있습니다.</p>
+    </div>
+
+    <!-- 캘린더 필터 -->
+    <div class="mb-6 bg-white shadow-sm ring-1 ring-gray-900/5 rounded-lg p-4">
+        <div class="flex flex-wrap gap-4">
+            <div>
+                <label for="status-filter" class="block text-sm font-medium text-gray-700 mb-1">예약 상태</label>
+                <select id="status-filter" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-brand focus:ring-brand sm:text-sm">
+                    <option value="all">전체</option>
+                    <option value="pending">대기중</option>
+                    <option value="confirmed">확정</option>
+                    <option value="completed">완료</option>
+                    <option value="cancelled">취소</option>
+                </select>
+            </div>
+            <div>
+                <label for="service-filter" class="block text-sm font-medium text-gray-700 mb-1">서비스 종류</label>
+                <select id="service-filter" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-brand focus:ring-brand sm:text-sm">
+                    <option value="all">전체</option>
+                    {% for service in services %}
+                    <option value="{{ service.id }}">{{ service.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
         </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-        <!-- 캘린더 내용은 추후 구현 -->
-        <div class="min-h-[600px] p-4">
-            <p class="text-gray-500 text-center">캘린더가 곧 구현될 예정입니다.</p>
+    <!-- 캘린더 -->
+    <div class="bg-white shadow-sm ring-1 ring-gray-900/5 rounded-lg p-4">
+        <div id="calendar"></div>
+    </div>
+</div>
+
+<!-- 예약 상세 모달 -->
+<div id="event-modal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-end sm:items-center justify-center min-h-full p-4 text-center sm:p-0">
+        <div class="relative bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full">
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                    <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4" id="modal-title"></h3>
+                        <div class="mt-4 space-y-4">
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500">예약 정보</h4>
+                                <div class="mt-2 text-sm text-gray-900">
+                                    <p><span class="font-medium">예약 시간:</span> <span id="event-time"></span></p>
+                                    <p><span class="font-medium">서비스:</span> <span id="event-service"></span></p>
+                                    <p><span class="font-medium">상태:</span> <span id="event-status"></span></p>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500">고객 정보</h4>
+                                <div class="mt-2 text-sm text-gray-900">
+                                    <p><span class="font-medium">고객명:</span> <span id="event-customer"></span></p>
+                                    <p><span class="font-medium">연락처:</span> <span id="event-phone"></span></p>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500">반려동물 정보</h4>
+                                <div class="mt-2 text-sm text-gray-900">
+                                    <p><span class="font-medium">이름:</span> <span id="event-pet-name"></span></p>
+                                    <p><span class="font-medium">종류:</span> <span id="event-pet-type"></span></p>
+                                    <p><span class="font-medium">품종:</span> <span id="event-pet-breed"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <a id="event-edit-link" href="#" 
+                    class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-brand text-base font-medium text-white hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand sm:ml-3 sm:w-auto sm:text-sm">
+                    상세보기
+                </a>
+                <button type="button" onclick="closeEventModal()"
+                    class="mt-3 w-full inline-flex justify-center rounded-lg border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                    닫기
+                </button>
+            </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.10/main.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.10/locales/ko.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/web-component@6.1.10/index.global.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.10/index.global.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.10/index.global.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/list@6.1.10/index.global.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@6.1.10/index.global.min.js'></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const calendarEl = document.getElementById('calendar');
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            locale: 'ko',
+            initialView: window.innerWidth < 768 ? 'listWeek' : 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,listWeek'
+            },
+            views: {
+                dayGridMonth: {
+                    titleFormat: { year: 'numeric', month: 'long' }
+                },
+                timeGridWeek: {
+                    titleFormat: { year: 'numeric', month: 'long', day: '2-digit' }
+                },
+                listWeek: {
+                    titleFormat: { year: 'numeric', month: 'long', day: '2-digit' }
+                }
+            },
+            windowResize: function(arg) {
+                if (arg.view.type === 'dayGridMonth' && window.innerWidth < 768) {
+                    calendar.changeView('listWeek');
+                } else if (arg.view.type === 'listWeek' && window.innerWidth >= 768) {
+                    calendar.changeView('dayGridMonth');
+                }
+            },
+            height: 'auto',
+            expandRows: true,
+            slotMinTime: '08:00:00',
+            slotMaxTime: '20:00:00',
+            allDaySlot: false,
+            slotEventOverlap: false,
+            eventTimeFormat: {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            },
+            events: function(info, successCallback, failureCallback) {
+                const statusFilter = document.getElementById('status-filter').value;
+                const serviceFilter = document.getElementById('service-filter').value;
+                
+                fetch(`{% url 'cieloAdmin:api_reservations' %}?start=${info.startStr}&end=${info.endStr}&status=${statusFilter}&service=${serviceFilter}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const events = data.map(reservation => ({
+                            id: reservation.id,
+                            title: `${reservation.customer_name} - ${reservation.service_name}`,
+                            start: reservation.datetime,
+                            end: reservation.end_datetime,
+                            backgroundColor: getStatusColor(reservation.status),
+                            borderColor: getStatusColor(reservation.status),
+                            extendedProps: {
+                                customer_name: reservation.customer_name,
+                                phone: reservation.phone,
+                                service: reservation.service_name,
+                                status: reservation.status,
+                                pet_name: reservation.pet_name,
+                                pet_type: reservation.pet_type,
+                                pet_breed: reservation.pet_breed
+                            }
+                        }));
+                        successCallback(events);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching events:', error);
+                        failureCallback(error);
+                    });
+            },
+            eventClick: function(info) {
+                showEventModal(info.event);
+            },
+            eventDidMount: function(info) {
+                info.el.title = info.event.title;
+            }
+        });
+        
+        calendar.render();
+        
+        // 필터 변경 이벤트 처리
+        document.getElementById('status-filter').addEventListener('change', function() {
+            calendar.refetchEvents();
+        });
+        
+        document.getElementById('service-filter').addEventListener('change', function() {
+            calendar.refetchEvents();
+        });
+    });
+    
+    function getStatusColor(status) {
+        const colors = {
+            'pending': '#FFA500',    // 주황색
+            'confirmed': '#4CAF50',  // 초록색
+            'completed': '#2196F3',  // 파란색
+            'cancelled': '#F44336'   // 빨간색
+        };
+        return colors[status] || '#9E9E9E';
+    }
+    
+    function getStatusText(status) {
+        const texts = {
+            'pending': '대기중',
+            'confirmed': '확정',
+            'completed': '완료',
+            'cancelled': '취소'
+        };
+        return texts[status] || status;
+    }
+    
+    function showEventModal(event) {
+        const modal = document.getElementById('event-modal');
+        const props = event.extendedProps;
+        
+        // 모달 내용 업데이트
+        document.getElementById('modal-title').textContent = event.title;
+        document.getElementById('event-time').textContent = event.start.toLocaleString('ko-KR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        });
+        document.getElementById('event-service').textContent = props.service;
+        document.getElementById('event-status').textContent = getStatusText(props.status);
+        document.getElementById('event-customer').textContent = props.customer_name;
+        document.getElementById('event-phone').textContent = props.phone;
+        document.getElementById('event-pet-name').textContent = props.pet_name;
+        document.getElementById('event-pet-type').textContent = props.pet_type;
+        document.getElementById('event-pet-breed').textContent = props.pet_breed;
+        
+        // 상세보기 링크 업데이트
+        document.getElementById('event-edit-link').href = `/admin/reservations/${event.id}/`;
+        
+        // 모달 표시
+        modal.classList.remove('hidden');
+    }
+    
+    function closeEventModal() {
+        const modal = document.getElementById('event-modal');
+        modal.classList.add('hidden');
+    }
+</script>
 {% endblock %}

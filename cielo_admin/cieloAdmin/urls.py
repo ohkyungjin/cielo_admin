@@ -4,15 +4,18 @@ from .views.views import (
     reservation_list, reservation_create, reservation_create_pet,
     reservation_create_ceremony, reservation_create_confirm,
     service_list, service_create,
+    option_groups, option_group_create, option_group_edit, option_group_delete,
+    option_create, option_edit, option_delete,
     statistics_index,
     memorial_list, memorial_create,
     settings_index,
-    calendar_index,
     user_list, user_create, user_edit,
     notification_list, notification_settings,
-    log_index
+    log_index,
+    calendar
 )
 from .views.auth import login
+from .views import api
 
 app_name = 'cieloAdmin'
 
@@ -34,6 +37,15 @@ urlpatterns = [
     path('service/', service_list, name='service_list'),
     path('service/create/', service_create, name='service_create'),
     
+    # 옵션 그룹 관리
+    path('options/', option_groups, name='option_groups'),
+    path('options/create/', option_group_create, name='option_group_create'),
+    path('options/<int:group_id>/', option_group_edit, name='option_group_edit'),
+    path('options/<int:group_id>/delete/', option_group_delete, name='option_group_delete'),
+    path('options/<int:group_id>/option/create/', option_create, name='option_create'),
+    path('options/option/<int:option_id>/', option_edit, name='option_edit'),
+    path('options/option/<int:option_id>/delete/', option_delete, name='option_delete'),
+    
     # 통계 분석
     path('statistics/', statistics_index, name='statistics_index'),
     
@@ -45,7 +57,8 @@ urlpatterns = [
     path('settings/', settings_index, name='settings_index'),
 
     # 캘린더
-    path('calendar/', calendar_index, name='calendar_index'),
+    path('calendar/', calendar, name='calendar'),
+    path('api/reservations/', api.reservation_calendar, name='api_reservations'),
     
     # 사용자 관리
     path('users/', user_list, name='user_list'),
@@ -56,6 +69,6 @@ urlpatterns = [
     path('notifications/', notification_list, name='notification_list'),
     path('notifications/settings/', notification_settings, name='notification_settings'),
     
-    # 로그 관리
+    # 로그
     path('logs/', log_index, name='log_index'),
 ]

@@ -47,9 +47,9 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                'brand': '#4F46E5',
-                'brand-dark': '#4338CA',
-                'brand-light': '#6366F1',
+                'brand': '#7e396e',
+                'brand-dark': '#662d59',  
+                'brand-light': '#9a4486', 
             },
         },
     },

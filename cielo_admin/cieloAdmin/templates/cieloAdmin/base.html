@@ -11,9 +11,9 @@
                 extend: {
                     colors: {
                         brand: {
-                            light: '#60A5FA', // 밝은 파란색
-                            DEFAULT: '#3B82F6', // 기본 파란색
-                            dark: '#2563EB', // 진한 파란색
+                            light: '#9a4486', // 밝은 보라색
+                            DEFAULT: '#7e396e', // 기본 보라색
+                            dark: '#662d59', // 진한 보라색
                         },
                         secondary: {
                             light: '#9CA3AF',
@@ -35,10 +35,20 @@
 
         <!-- 사이드바 -->
         <aside id="sidebar" class="fixed top-0 left-0 z-30 w-64 h-screen transition-transform -translate-x-full lg:translate-x-0">
-            <div class="h-full px-3 py-4 overflow-y-auto bg-white border-r border-gray-200">
+            <div class="h-full overflow-y-auto bg-white border-r border-gray-200">
                 <div class="flex items-center justify-between mb-5">
                     <a href="{% url 'cieloAdmin:index' %}" class="flex items-center">
-                        <img src="/static/images/logo.png" class="h-8" alt="시엘로펫 로고">
+                        <svg class="h-8 w-auto text-brand" viewBox="0 0 200 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g transform="translate(0, 2)">
+                                <!-- 구름 모양 -->
+                                <path d="M15 8 C18 4, 26 4, 29 8 C32 12, 32 20, 29 24 L15 24 C12 20, 12 12, 15 8" fill="currentColor" opacity="0.8"/>
+                                <!-- 강아지 실루엣 -->
+                                <path d="M18 14 C20 12, 24 12, 26 14 L26 18 C24 20, 20 20, 18 18 L18 14" fill="white"/>
+                            </g>
+                            <!-- 텍스트 -->
+                            <text x="40" y="20" font-family="Arial" font-size="14" font-weight="bold" fill="currentColor">CieloPet</text>
+                            <text x="105" y="20" font-family="Arial" font-size="14" font-weight="bold" fill="currentColor">관리자</text>
+                        </svg>
                     </a>
                     <button type="button" class="lg:hidden text-gray-400 hover:text-gray-500" onclick="toggleSidebar()">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

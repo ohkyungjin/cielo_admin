@@ -1,7 +1,7 @@
 {% extends 'cieloAdmin/base.html' %}
-{% load static %}
+{% load humanize %}
 
-{% block title %}서비스 관리 - 반려동물 장례 서비스 관리자{% endblock %}
+{% block title %}예식 관리 - 반려동물 장례 서비스 관리자{% endblock %}
 
 {% block content %}
 <div class="min-h-screen bg-gray-50">
@@ -10,9 +10,7 @@
         <div class="max-w-7xl mx-auto py-4 sm:py-6 px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
                 <div class="flex-1 min-w-0">
-                    <h2 class="text-xl sm:text-2xl font-bold text-gray-900">
-                        서비스 관리
-                    </h2>
+                    <h2 class="text-2xl font-semibold text-secondary-dark">예식 관리</h2>
                 </div>
                 <div class="flex">
                     <button type="button" onclick="location.href='{% url 'cieloAdmin:service_create' %}'"
@@ -20,7 +18,7 @@
                         <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                         </svg>
-                        새 서비스 추가
+                        새 예식 등록
                     </button>
                 </div>
             </div>
@@ -82,15 +80,15 @@
         <!-- 모바일 뷰 -->
         <div class="block sm:hidden">
             <div class="space-y-4">
-                {% for i in "123"|make_list %}
+                {% for service in services %}
                 <div class="bg-white shadow rounded-lg overflow-hidden">
                     <div class="p-4">
                         <div class="flex justify-between items-start">
                             <div>
-                                <div class="text-sm font-medium text-gray-900">기본 예식</div>
-                                <div class="text-xs text-gray-500">Basic Ceremony</div>
-                                <div class="mt-2 text-sm text-gray-600">예식</div>
-                                <div class="mt-1 text-sm font-medium text-gray-900">￦500,000</div>
+                                <div class="text-sm font-medium text-gray-900">{{ service.name }}</div>
+                                <div class="text-xs text-gray-500">{{ service.name_en }}</div>
+                                <div class="mt-2 text-sm text-gray-600">{{ service.category }}</div>
+                                <div class="mt-1 text-sm font-medium text-gray-900">{{ service.base_price|intcomma }}원</div>
                             </div>
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                 활성
@@ -101,6 +99,12 @@
                                 수정
                             </button>
                         </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="bg-white shadow rounded-lg overflow-hidden">
+                    <div class="p-4">
+                        <div class="text-sm font-medium text-gray-900">등록된 서비스가 없습니다.</div>
                     </div>
                 </div>
                 {% endfor %}
@@ -132,17 +136,17 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            {% for i in "123"|make_list %}
+                            {% for service in services %}
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900">기본 예식</div>
-                                    <div class="text-sm text-gray-500">Basic Ceremony</div>
+                                    <div class="text-sm font-medium text-gray-900">{{ service.name }}</div>
+                                    <div class="text-sm text-gray-500">{{ service.name_en }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">예식</div>
+                                    <div class="text-sm text-gray-900">{{ service.category }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">￦500,000</div>
+                                    <div class="text-sm text-gray-900">{{ service.base_price|intcomma }}원</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
@@ -153,6 +157,12 @@
                                     <button class="text-brand hover:text-brand-dark focus:outline-none focus:underline">
                                         수정
                                     </button>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="px-3 py-4 text-sm text-secondary text-center">
+                                    등록된 서비스가 없습니다.
                                 </td>
                             </tr>
                             {% endfor %}

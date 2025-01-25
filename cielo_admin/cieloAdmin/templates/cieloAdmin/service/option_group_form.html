@@ -1,0 +1,190 @@
+{% extends 'cieloAdmin/base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="p-4 sm:p-6 lg:p-8">
+    <div class="max-w-3xl mx-auto">
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold text-secondary-dark">{{ group|default:'새 옵션 그룹' }}</h1>
+            <p class="mt-1 text-sm text-secondary">옵션 그룹 정보를 입력해주세요.</p>
+        </div>
+
+        <form method="post" class="space-y-8">
+            {% csrf_token %}
+            
+            <!-- 기본 정보 -->
+            <div class="bg-white shadow-sm ring-1 ring-gray-900/5 rounded-lg p-6">
+                <h2 class="text-lg font-semibold text-secondary-dark mb-4">기본 정보</h2>
+                <div class="grid grid-cols-1 gap-6">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-secondary-dark">그룹명 *</label>
+                        <input type="text" name="name" id="name" required value="{{ group.name|default:'' }}"
+                            class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm">
+                    </div>
+                    
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-secondary-dark">설명</label>
+                        <textarea name="description" id="description" rows="3"
+                            class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm">{{ group.description|default:'' }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            {% if group %}
+            <!-- 옵션 목록 -->
+            <div class="bg-white shadow-sm ring-1 ring-gray-900/5 rounded-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold text-secondary-dark">옵션 목록</h2>
+                    <button type="button" onclick="showCreateOptionModal()"
+                        class="inline-flex items-center justify-center rounded-lg border border-transparent bg-brand px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2">
+                        새 옵션
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-300">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-secondary-dark sm:pl-6">
+                                    옵션명
+                                </th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-secondary-dark">
+                                    가격
+                                </th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-secondary-dark">
+                                    등록일
+                                </th>
+                                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                                    <span class="sr-only">Actions</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 bg-white">
+                            {% for option in group.options.all %}
+                            <tr data-option-id="{{ option.id }}" data-option-name="{{ option.name }}" data-option-price="{{ option.price }}">
+                                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-secondary-dark sm:pl-6">
+                                    {{ option.name }}
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-secondary">
+                                    {{ option.price|intcomma }}원
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-secondary">
+                                    {{ option.created_at|date:"Y-m-d" }}
+                                </td>
+                                <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                                    <button type="button" onclick="editOption({{ option.id }})"
+                                        class="text-brand hover:text-brand-dark">수정</button>
+                                    <button type="button" onclick="deleteOption({{ option.id }})"
+                                        class="ml-4 text-red-600 hover:text-red-900">삭제</button>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="px-3 py-4 text-sm text-secondary text-center">
+                                    등록된 옵션이 없습니다.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- 저장 버튼 -->
+            <div class="flex justify-end space-x-3">
+                <a href="{% url 'cieloAdmin:option_groups' %}"
+                    class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
+                    취소
+                </a>
+                <button type="submit"
+                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-brand hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
+                    저장
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 옵션 생성/수정 모달 -->
+<div id="optionModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 hidden">
+    <div class="fixed inset-0 z-10 overflow-y-auto">
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <div class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+                <form id="optionForm" method="post">
+                    {% csrf_token %}
+                    <div>
+                        <div class="mt-3 text-center sm:mt-5">
+                            <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">새 옵션</h3>
+                        </div>
+                        <div class="mt-4 space-y-4">
+                            <div>
+                                <label for="option_name" class="block text-sm font-medium text-secondary-dark">옵션명 *</label>
+                                <input type="text" name="name" id="option_name" required
+                                    class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm">
+                            </div>
+                            <div>
+                                <label for="option_price" class="block text-sm font-medium text-secondary-dark">가격 *</label>
+                                <input type="number" name="price" id="option_price" required min="0"
+                                    class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
+                        <button type="submit"
+                            class="inline-flex w-full justify-center rounded-lg bg-brand px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand sm:col-start-2">
+                            저장
+                        </button>
+                        <button type="button"
+                            class="mt-3 inline-flex w-full justify-center rounded-lg bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
+                            onclick="hideOptionModal()">
+                            취소
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showCreateOptionModal() {
+    const modal = document.getElementById('optionModal');
+    const form = document.getElementById('optionForm');
+    const titleEl = document.getElementById('modal-title');
+    
+    form.reset();
+    form.action = "{% url 'cieloAdmin:option_create' group.id %}";
+    titleEl.textContent = '새 옵션';
+    
+    modal.classList.remove('hidden');
+}
+
+function editOption(optionId) {
+    const modal = document.getElementById('optionModal');
+    const form = document.getElementById('optionForm');
+    const titleEl = document.getElementById('modal-title');
+    const nameInput = document.getElementById('option_name');
+    const priceInput = document.getElementById('option_price');
+    
+    const row = document.querySelector(`tr[data-option-id="${optionId}"]`);
+    nameInput.value = row.dataset.optionName;
+    priceInput.value = row.dataset.optionPrice;
+    
+    form.action = "{% url 'cieloAdmin:option_edit' 0 %}".replace('0', optionId);
+    titleEl.textContent = '옵션 수정';
+    
+    modal.classList.remove('hidden');
+}
+
+function hideOptionModal() {
+    const modal = document.getElementById('optionModal');
+    modal.classList.add('hidden');
+}
+
+function deleteOption(optionId) {
+    if (confirm('정말 이 옵션을 삭제하시겠습니까?')) {
+        window.location.href = "{% url 'cieloAdmin:option_delete' 0 %}".replace('0', optionId);
+    }
+}
+</script>
+{% endblock %}

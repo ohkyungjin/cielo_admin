@@ -6,6 +6,8 @@ from .payment import Payment, Discount, ReservationDiscount
 from .notification import NotificationTemplate, Notification
 from .system_log import SystemLog, ErrorLog
 from .statistics import DailyRevenue, ServiceStatistics, PaymentMethodStatistics
+from .service import Service, OptionGroup, Option
+from .memorial import MemorialSpace, MemorialPost, MemorialImage, MemorialComment
 
 __all__ = [
     'User', 'Role',
@@ -16,4 +18,6 @@ __all__ = [
     'NotificationTemplate', 'Notification',
     'SystemLog', 'ErrorLog',
     'DailyRevenue', 'ServiceStatistics', 'PaymentMethodStatistics',
+    'Service', 'OptionGroup', 'Option',
+    'MemorialSpace', 'MemorialPost', 'MemorialImage', 'MemorialComment',
 ]
