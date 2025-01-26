@@ -157,3 +157,7 @@ AUTH_USER_MODEL = 'cieloAdmin.User'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+ADMINS = [
+   ('kjoh', 'kjoh@cielopet.kr'),
+]

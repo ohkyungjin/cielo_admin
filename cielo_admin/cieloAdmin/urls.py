@@ -3,7 +3,7 @@ from .views.views import (
     index, 
     reservation_list, reservation_create, reservation_create_pet,
     reservation_create_ceremony, reservation_create_confirm,
-    service_list, service_create,
+    service_list, service_create, service_edit, service_delete,
     option_groups, option_group_create, option_group_edit, option_group_delete,
     option_create, option_edit, option_delete,
     statistics_index,
@@ -36,6 +36,8 @@ urlpatterns = [
     # 서비스 관리
     path('service/', service_list, name='service_list'),
     path('service/create/', service_create, name='service_create'),
+    path('service/<int:service_id>/', service_edit, name='service_edit'),
+    path('service/<int:service_id>/delete/', service_delete, name='service_delete'),
     
     # 옵션 그룹 관리
     path('options/', option_groups, name='option_groups'),

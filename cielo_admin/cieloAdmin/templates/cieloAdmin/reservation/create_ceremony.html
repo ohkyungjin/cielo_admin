@@ -64,192 +64,105 @@
         <!-- Step 3: 예식 선택 -->
         <div class="bg-white shadow rounded-lg">
             <div class="px-6 py-8">
-                <form id="ceremony-form" class="space-y-8">
+                <form id="ceremony-form" method="post" action="{% url 'create_ceremony' %}" class="space-y-8">
+                    {% csrf_token %}
                     <!-- 예식 패키지 선택 -->
                     <div>
                         <h3 class="text-lg font-medium leading-6 text-gray-900 mb-6">예식 패키지 선택</h3>
                         <div class="grid grid-cols-1 gap-4">
-                            <!-- 기본 예식 -->
-                            <div class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm hover:border-brand flex space-x-3">
+                            {% for ceremony in ceremonies %}
+                            <div class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm hover:border-brand flex space-x-3 {% if not ceremony.is_active %}opacity-50{% endif %}">
                                 <div class="flex-shrink-0">
-                                    <input type="radio" name="ceremony_package" value="basic" class="h-4 w-4 text-brand focus:ring-brand border-gray-300">
+                                    <input type="radio" name="ceremony_id" value="{{ ceremony.id }}" 
+                                           class="h-4 w-4 text-brand focus:ring-brand border-gray-300"
+                                           {% if not ceremony.is_active %}disabled{% endif %}>
                                 </div>
                                 <div class="min-w-0 flex-1">
-                                    <div class="flex justify-between">
-                                        <label class="text-sm font-medium text-gray-900">기본 예식</label>
-                                        <span class="text-sm text-gray-500">￦500,000</span>
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <label class="text-sm font-medium text-gray-900">{{ ceremony.name }}</label>
+                                            {% if ceremony.is_featured %}
+                                            <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-brand text-white">추천</span>
+                                            {% endif %}
+                                        </div>
+                                        <span class="text-sm text-gray-500">￦{{ ceremony.base_price|floatformat:0 }}</span>
                                     </div>
-                                    <p class="text-sm text-gray-500 mt-1">기본적인 장례 서비스와 함께 제공되는 패키지입니다.</p>
+                                    <p class="text-sm text-gray-500 mt-1">{{ ceremony.short_description }}</p>
                                 </div>
                             </div>
-
-                            <!-- 고급 예식 -->
-                            <div class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm hover:border-brand flex space-x-3">
-                                <div class="flex-shrink-0">
-                                    <input type="radio" name="ceremony_package" value="premium" class="h-4 w-4 text-brand focus:ring-brand border-gray-300">
-                                </div>
-                                <div class="min-w-0 flex-1">
-                                    <div class="flex justify-between">
-                                        <label class="text-sm font-medium text-gray-900">고급 예식</label>
-                                        <span class="text-sm text-gray-500">￦800,000</span>
-                                    </div>
-                                    <p class="text-sm text-gray-500 mt-1">프리미엄 서비스와 고급 용품이 포함된 패키지입니다.</p>
-                                </div>
-                            </div>
-
-                            <!-- 최고급 예식 -->
-                            <div class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm hover:border-brand flex space-x-3">
-                                <div class="flex-shrink-0">
-                                    <input type="radio" name="ceremony_package" value="vip" class="h-4 w-4 text-brand focus:ring-brand border-gray-300">
-                                </div>
-                                <div class="min-w-0 flex-1">
-                                    <div class="flex justify-between">
-                                        <label class="text-sm font-medium text-gray-900">최고급 예식</label>
-                                        <span class="text-sm text-gray-500">￦1,200,000</span>
-                                    </div>
-                                    <p class="text-sm text-gray-500 mt-1">VIP를 위한 최상급 서비스와 특별 관리가 포함된 패키지입니다.</p>
-                                </div>
-                            </div>
-
-                            <!-- 호화 예식 -->
-                            <div class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm hover:border-brand flex space-x-3">
-                                <div class="flex-shrink-0">
-                                    <input type="radio" name="ceremony_package" value="luxury" class="h-4 w-4 text-brand focus:ring-brand border-gray-300">
-                                </div>
-                                <div class="min-w-0 flex-1">
-                                    <div class="flex justify-between">
-                                        <label class="text-sm font-medium text-gray-900">호화 예식</label>
-                                        <span class="text-sm text-gray-500">￦2,000,000</span>
-                                    </div>
-                                    <p class="text-sm text-gray-500 mt-1">최고급 시설과 서비스, 전담 관리사가 포함된 럭셔리 패키지입니다.</p>
-                                </div>
-                            </div>
+                            {% endfor %}
                         </div>
                     </div>
 
                     <!-- 옵션 그룹 선택 -->
-                    <div>
-                        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-6">추가 옵션 선택</h3>
-                        
-                        <!-- 생화 세트 -->
-                        <div class="mb-6">
-                            <h4 class="text-sm font-medium text-gray-900 mb-4">생화 세트</h4>
+                    <div id="option-groups" class="space-y-8" style="display: none;">
+                        {% for group in option_groups %}
+                        <div class="option-group" data-ceremony-id="{{ group.ceremony.id }}">
+                            <h3 class="text-lg font-medium leading-6 text-gray-900 mb-6">
+                                {{ group.name }}
+                                {% if group.is_required %}
+                                <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">필수</span>
+                                {% endif %}
+                            </h3>
                             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                <div class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm hover:border-brand flex space-x-3">
+                                {% for option in group.options.all %}
+                                <div class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm hover:border-brand flex space-x-3 {% if option.is_out_of_stock %}opacity-50{% endif %}">
                                     <div class="flex-shrink-0">
-                                        <input type="checkbox" name="flower_options" value="basic_flower" class="h-4 w-4 text-brand focus:ring-brand border-gray-300 rounded">
+                                        <input type="{{ 'radio' if group.max_choices == 1 else 'checkbox' }}"
+                                               name="option_{{ group.id }}"
+                                               value="{{ option.id }}"
+                                               class="h-4 w-4 text-brand focus:ring-brand border-gray-300 {% if group.max_choices != 1 %}rounded{% endif %}"
+                                               {% if option.is_out_of_stock %}disabled{% endif %}
+                                               {% if option.is_default %}checked{% endif %}>
                                     </div>
                                     <div class="min-w-0 flex-1">
-                                        <div class="flex justify-between">
-                                            <label class="text-sm font-medium text-gray-900">기본 생화</label>
-                                            <span class="text-sm text-gray-500">￦100,000</span>
+                                        <div class="flex justify-between items-center">
+                                            <div>
+                                                <label class="text-sm font-medium text-gray-900">{{ option.name }}</label>
+                                                {% if option.is_low_stock and not option.is_out_of_stock %}
+                                                <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">재고 부족</span>
+                                                {% endif %}
+                                                {% if option.is_out_of_stock %}
+                                                <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">품절</span>
+                                                {% endif %}
+                                            </div>
+                                            <span class="text-sm text-gray-500">￦{{ option.price|floatformat:0 }}</span>
                                         </div>
+                                        {% if option.description %}
+                                        <p class="text-sm text-gray-500 mt-1">{{ option.description }}</p>
+                                        {% endif %}
                                     </div>
                                 </div>
-
-                                <div class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm hover:border-brand flex space-x-3">
-                                    <div class="flex-shrink-0">
-                                        <input type="checkbox" name="flower_options" value="premium_flower" class="h-4 w-4 text-brand focus:ring-brand border-gray-300 rounded">
-                                    </div>
-                                    <div class="min-w-0 flex-1">
-                                        <div class="flex justify-between">
-                                            <label class="text-sm font-medium text-gray-900">고급 생화</label>
-                                            <span class="text-sm text-gray-500">￦200,000</span>
-                                        </div>
-                                    </div>
-                                </div>
+                                {% endfor %}
                             </div>
+                            {% if group.min_choices > 0 or group.max_choices > 0 %}
+                            <p class="text-sm text-gray-500 mt-2">
+                                {% if group.min_choices > 0 and group.max_choices > 0 %}
+                                {{ group.min_choices }}개 이상 {{ group.max_choices }}개 이하 선택
+                                {% elif group.min_choices > 0 %}
+                                최소 {{ group.min_choices }}개 선택
+                                {% elif group.max_choices > 0 %}
+                                최대 {{ group.max_choices }}개 선택
+                                {% endif %}
+                            </p>
+                            {% endif %}
                         </div>
-
-                        <!-- 관 세트 -->
-                        <div class="mb-6">
-                            <h4 class="text-sm font-medium text-gray-900 mb-4">관 세트</h4>
-                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                <div class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm hover:border-brand flex space-x-3">
-                                    <div class="flex-shrink-0">
-                                        <input type="radio" name="coffin_options" value="basic_coffin" class="h-4 w-4 text-brand focus:ring-brand border-gray-300">
-                                    </div>
-                                    <div class="min-w-0 flex-1">
-                                        <div class="flex justify-between">
-                                            <label class="text-sm font-medium text-gray-900">기본 관</label>
-                                            <span class="text-sm text-gray-500">￦150,000</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm hover:border-brand flex space-x-3">
-                                    <div class="flex-shrink-0">
-                                        <input type="radio" name="coffin_options" value="premium_coffin" class="h-4 w-4 text-brand focus:ring-brand border-gray-300">
-                                    </div>
-                                    <div class="min-w-0 flex-1">
-                                        <div class="flex justify-between">
-                                            <label class="text-sm font-medium text-gray-900">고급 관</label>
-                                            <span class="text-sm text-gray-500">￦300,000</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        {% endfor %}
                     </div>
 
-                    <!-- 무게별 추가 비용 -->
-                    <div>
-                        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-6">무게별 추가 비용</h3>
-                        <div class="rounded-md bg-blue-50 p-4">
-                            <div class="flex">
-                                <div class="flex-shrink-0">
-                                    <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                                    </svg>
-                                </div>
-                                <div class="ml-3 flex-1 md:flex md:justify-between">
-                                    <p class="text-sm text-blue-700">
-                                        반려동물 무게: <span id="pet-weight" class="font-medium">12kg</span><br>
-                                        추가 비용: <span id="weight-cost" class="font-medium">￦100,000</span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 금액 계산 -->
+                    <!-- 총 금액 -->
                     <div class="border-t border-gray-200 pt-8">
-                        <div class="space-y-4">
-                            <div class="flex justify-between text-sm">
-                                <span class="text-gray-600">예식 패키지</span>
-                                <span class="text-gray-900 font-medium">￦800,000</span>
-                            </div>
-                            <div class="flex justify-between text-sm">
-                                <span class="text-gray-600">추가 옵션</span>
-                                <span class="text-gray-900 font-medium">￦250,000</span>
-                            </div>
-                            <div class="flex justify-between text-sm">
-                                <span class="text-gray-600">무게 추가 비용</span>
-                                <span class="text-gray-900 font-medium">￦100,000</span>
-                            </div>
-                            <div class="border-t border-gray-200 pt-4 flex justify-between">
-                                <span class="text-base font-medium text-gray-900">총 금액</span>
-                                <span class="text-base font-medium text-brand">￦1,150,000</span>
-                            </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg font-medium text-gray-900">총 금액</span>
+                            <span id="total-amount" class="text-2xl font-bold text-brand">￦0</span>
                         </div>
                     </div>
 
-                    <!-- 버튼 영역 -->
-                    <div class="pt-5">
-                        <div class="flex justify-end space-x-3">
-                            <button type="button" onclick="history.back()"
-                                class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
-                                이전
-                            </button>
-                            <button type="button"
-                                class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
-                                임시 저장
-                            </button>
-                            <button type="submit"
-                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-brand hover:bg-brand-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
-                                다음 단계
-                            </button>
-                        </div>
+                    <!-- 다음 단계 버튼 -->
+                    <div class="flex justify-end mt-8">
+                        <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-brand hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
+                            다음 단계
+                        </button>
                     </div>
                 </form>
             </div>
@@ -260,21 +173,87 @@
 
 {% block extra_js %}
 <script>
-    // 금액 계산 및 업데이트 함수
-    function updateTotalAmount() {
-        // TODO: 선택된 옵션들의 금액을 계산하고 총액을 업데이트
+    function formatPrice(price) {
+        return '￦' + price.toLocaleString();
     }
+
+    function updateTotalAmount() {
+        let total = 0;
+        
+        // 선택된 예식 패키지 가격 계산
+        const selectedCeremony = document.querySelector('input[name="ceremony_id"]:checked');
+        if (selectedCeremony) {
+            const ceremonyPrice = parseFloat(selectedCeremony.closest('.flex-1').querySelector('.text-gray-500').textContent.replace('￦', '').replace(',', ''));
+            total += ceremonyPrice;
+        }
+
+        // 선택된 옵션 가격 계산
+        document.querySelectorAll('input[type="checkbox"]:checked, input[type="radio"]:checked').forEach(option => {
+            if (option.name.startsWith('option_')) {
+                const optionPrice = parseFloat(option.closest('.flex-1').querySelector('.text-gray-500').textContent.replace('￦', '').replace(',', ''));
+                total += optionPrice;
+            }
+        });
+
+        document.getElementById('total-amount').textContent = formatPrice(total);
+    }
+
+    // 예식 패키지 선택 시 해당하는 옵션 그룹 표시
+    document.querySelectorAll('input[name="ceremony_id"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const ceremonyId = this.value;
+            
+            // 모든 옵션 그룹 숨기기
+            document.querySelectorAll('.option-group').forEach(group => {
+                group.style.display = 'none';
+            });
+
+            // 선택된 예식에 해당하는 옵션 그룹만 표시
+            document.querySelectorAll(`.option-group[data-ceremony-id="${ceremonyId}"]`).forEach(group => {
+                group.style.display = 'block';
+            });
+
+            // 옵션 그룹 컨테이너 표시
+            document.getElementById('option-groups').style.display = 'block';
+
+            updateTotalAmount();
+        });
+    });
+
+    // 옵션 선택 시 총액 업데이트
+    document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(input => {
+        input.addEventListener('change', updateTotalAmount);
+    });
 
     // 폼 제출 처리
     document.getElementById('ceremony-form').addEventListener('submit', function(e) {
         e.preventDefault();
-        // TODO: 폼 데이터 검증 및 서버 전송
-        window.location.href = "{% url 'cieloAdmin:reservation_create_confirm' %}";
-    });
 
-    // 라디오 버튼과 체크박스의 변경 이벤트 리스너
-    document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
-        input.addEventListener('change', updateTotalAmount);
+        // 예식 패키지 선택 확인
+        const selectedCeremony = document.querySelector('input[name="ceremony_id"]:checked');
+        if (!selectedCeremony) {
+            alert('예식 패키지를 선택해주세요.');
+            return;
+        }
+
+        // 필수 옵션 그룹 선택 확인
+        let isValid = true;
+        document.querySelectorAll('.option-group[data-ceremony-id="' + selectedCeremony.value + '"]').forEach(group => {
+            if (group.querySelector('.bg-red-100')) {  // 필수 옵션 그룹
+                const selectedOptions = group.querySelectorAll('input:checked').length;
+                const minChoices = parseInt(group.querySelector('p.text-sm').textContent.match(/최소 (\d+)개/)?.[1] || 0);
+                
+                if (selectedOptions < minChoices) {
+                    alert('필수 옵션을 선택해주세요.');
+                    isValid = false;
+                    return;
+                }
+            }
+        });
+
+        if (isValid) {
+            this.submit();
+        }
     });
 </script>
 {% endblock %}
