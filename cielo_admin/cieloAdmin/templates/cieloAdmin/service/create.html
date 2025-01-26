@@ -6,7 +6,7 @@
     <div class="max-w-3xl mx-auto">
         <div class="mb-6">
             <h1 class="text-2xl font-bold text-secondary-dark">새 예식 등록</h1>
-            <p class="mt-1 text-sm text-secondary">단계별로 필요한 정보를 입력해주세요.</p>
+            <p class="mt-1 text-sm text-secondary" id="create-service-description">단계별로 필요한 정보를 입력해주세요.</p>
         </div>
 
         <!-- 진행 상태 표시 -->
@@ -24,10 +24,6 @@
                         <div id="step2-indicator" class="w-8 h-8 mb-2 rounded-full bg-gray-300 text-white flex items-center justify-center font-semibold">2</div>
                         <span>옵션 선택</span>
                     </div>
-                    <div class="text-center flex flex-col items-center">
-                        <div id="step3-indicator" class="w-8 h-8 mb-2 rounded-full bg-gray-300 text-white flex items-center justify-center font-semibold">3</div>
-                        <span>최종 확인</span>
-                    </div>
                 </div>
             </div>
         </div>
@@ -36,51 +32,97 @@
             {% csrf_token %}
             
             <!-- 1단계: 기본 정보 -->
-            <div id="step1" class="step-content">
-                <div class="bg-white shadow-sm ring-1 ring-gray-900/5 rounded-lg p-6">
-                    <h2 class="text-lg font-semibold text-secondary-dark mb-4">기본 정보</h2>
-                    <div class="grid grid-cols-1 gap-6">
-                        <div>
-                            <label for="name" class="block text-sm font-medium text-secondary-dark">
-                                예식명 <span class="text-red-500">*</span>
+            <div id="step1" class="space-y-8 divide-y divide-gray-200">
+                <div class="space-y-6 sm:space-y-5">
+                    <div>
+                        <h3 class="text-lg font-medium leading-6 text-gray-900">기본 정보</h3>
+                        <p class="mt-1 max-w-2xl text-sm text-gray-500" id="basic-info-description">예식 서비스의 기본 정보를 입력해주세요.</p>
+                    </div>
+
+                    <div class="space-y-6 sm:space-y-5">
+                        <!-- 예식명 -->
+                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                            <label for="name" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                예식명 <span class="text-red-500" aria-hidden="true">*</span>
                             </label>
-                            <input type="text" name="name" id="name" required
-                                class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm">
+                            <div class="mt-1 sm:mt-0 sm:col-span-2">
+                                <input type="text" name="name" id="name" required
+                                    aria-required="true"
+                                    aria-describedby="name-description"
+                                    maxlength="100"
+                                    class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-brand focus:ring-brand sm:max-w-xs sm:text-sm">
+                                <p class="mt-1 text-sm text-gray-500" id="name-description">예식의 고유한 이름을 입력해주세요. (최대 100자)</p>
+                            </div>
                         </div>
 
-                        <div>
-                            <label for="description" class="block text-sm font-medium text-secondary-dark">
-                                예식 설명 <span class="text-red-500">*</span>
+                        <!-- 설명 -->
+                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                            <label for="description" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                설명 <span class="text-red-500" aria-hidden="true">*</span>
                             </label>
-                            <textarea name="description" id="description" rows="3" required
-                                class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm"></textarea>
+                            <div class="mt-1 sm:mt-0 sm:col-span-2">
+                                <textarea name="description" id="description" required
+                                    aria-required="true"
+                                    aria-describedby="description-hint"
+                                    maxlength="500"
+                                    rows="4"
+                                    class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-brand focus:ring-brand sm:text-sm"></textarea>
+                                <p class="mt-1 text-sm text-gray-500" id="description-hint">예식 서비스에 대한 상세한 설명을 입력해주세요. (최대 500자)</p>
+                            </div>
                         </div>
 
-                        <div>
-                            <label for="base_price" class="block text-sm font-medium text-secondary-dark">
-                                기본 가격 <span class="text-red-500">*</span>
+                        <!-- 가격 -->
+                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                            <label for="display_price" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                가격 <span class="text-red-500" aria-hidden="true">*</span>
                             </label>
-                            <div class="mt-1 relative rounded-lg shadow-sm">
-                                <input type="number" name="base_price" id="base_price" required
-                                    min="0" step="1000"
-                                    class="block w-full px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand sm:text-sm"
-                                    placeholder="0">
-                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                    <span class="text-gray-500 sm:text-sm">원</span>
+                            <div class="mt-1 sm:mt-0 sm:col-span-2">
+                                <div class="relative max-w-lg rounded-md shadow-sm sm:max-w-xs">
+                                    <input type="text" id="display_price" required
+                                        aria-required="true"
+                                        aria-describedby="price-description"
+                                        min="0"
+                                        max="100000000"
+                                        class="block w-full rounded-md border-gray-300 pr-12 focus:border-brand focus:ring-brand sm:text-sm"
+                                        oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                                        value="{{ service.base_price|default:'' }}">
+                                    <input type="hidden" name="base_price" id="base_price">
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                        <span class="text-gray-500 sm:text-sm">원</span>
+                                    </div>
+                                </div>
+                                <p class="mt-1 text-sm text-gray-500" id="price-description">0원에서 1억원 사이의 금액을 입력해주세요.</p>
+                            </div>
+                        </div>
+
+                        <!-- 상태 -->
+                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                            <label for="status" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                상태 <span class="text-red-500">*</span>
+                            </label>
+                            <div class="mt-1 sm:mt-0 sm:col-span-2">
+                                <div class="relative inline-block w-full sm:max-w-xs">
+                                    <select id="status" name="status" required
+                                        class="block w-full rounded-md border-gray-300 pl-3 pr-10 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand hover:border-brand transition-colors duration-200 sm:text-sm appearance-none cursor-pointer bg-white shadow-sm">
+                                        <option value="active">활성</option>
+                                        <option value="inactive">비활성</option>
+                                        <option value="pending">준비중</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
 
-                        <div>
-                            <label for="image" class="block text-sm font-medium text-secondary-dark">
-                                대표 이미지
+                        <!-- 대표 이미지 -->
+                        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                            <label for="image" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                대표 이미지 <span class="text-red-500">*</span>
                             </label>
-                            <div class="mt-1 flex items-center">
-                                <input type="file" name="image" id="image" accept="image/*"
+                            <div class="mt-1 sm:mt-0 sm:col-span-2">
+                                <input type="file" name="image" id="image" accept="image/*" 
                                     class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand hover:file:bg-brand-100">
-                            </div>
-                            <div id="image-preview" class="mt-2 hidden">
-                                <img src="" alt="Preview" class="max-w-xs rounded-lg shadow-sm">
+                                <div id="image-preview" class="mt-2 hidden">
+                                    <img src="" alt="Preview" class="h-32 w-32 object-cover rounded-lg">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -89,65 +131,65 @@
 
             <!-- 2단계: 옵션 선택 -->
             <div id="step2" class="step-content hidden">
-                <div class="bg-white shadow-sm ring-1 ring-gray-900/5 rounded-lg p-6">
-                    <h2 class="text-lg font-semibold text-secondary-dark mb-4">옵션 선택</h2>
-                    <div class="space-y-6">
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-lg font-medium leading-6 text-gray-900">옵션 선택</h3>
+                        <p class="mt-1 max-w-2xl text-sm text-gray-500">예식에 포함될 옵션들을 선택해주세요.</p>
+                    </div>
+                    
+                    <div id="option-groups-container" class="grid grid-cols-1 gap-6">
                         {% for group in option_groups %}
-                        <div class="option-group">
-                            <label for="option_group_{{ group.id }}" class="block text-sm font-medium text-secondary-dark mb-2">
-                                {{ group.name }}
-                            </label>
-                            <select name="option_group_{{ group.id }}" 
-                                    id="option_group_{{ group.id }}" 
-                                    class="block w-full pl-3 pr-10 py-2.5 text-base border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand rounded-lg shadow-sm">
-                                <option value="">옵션 그룹을 선택하세요</option>
-                                <option value="{{ group.id }}">{{ group.name }}</option>
-                            </select>
-                            {% if group.description %}
-                            <p class="mt-1 text-sm text-gray-500">{{ group.description }}</p>
-                            {% endif %}
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                            <!-- 옵션 그룹 헤더 -->
+                            <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                                <div class="flex items-center space-x-3">
+                                    <input type="checkbox" name="group_ids[]" value="{{ group.id }}"
+                                        class="h-4 w-4 text-brand border-gray-300 rounded focus:ring-brand">
+                                    <span class="group-name text-sm font-medium text-gray-900">{{ group.name }}</span>
+                                </div>
+                            </div>
+                            <!-- 옵션 목록 -->
+                            <div class="px-6 py-4 space-y-4">
+                                {% for option in group.options.all %}
+                                <div class="option flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <input type="checkbox" name="option_ids[]" value="{{ option.id }}"
+                                            class="h-4 w-4 text-brand border-gray-300 rounded focus:ring-brand">
+                                        <span class="option-name text-sm text-gray-700">{{ option.name }}</span>
+                                    </div>
+                                    <span class="option-price text-sm font-medium text-gray-900">{{ option.price|intcomma }}원</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-12 bg-white rounded-lg border-2 border-dashed border-gray-300">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                            </svg>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900">등록된 옵션 그룹이 없습니다</h3>
+                            <p class="mt-1 text-sm text-gray-500">먼저 옵션 그룹을 등록해주세요.</p>
                         </div>
                         {% endfor %}
                     </div>
                 </div>
             </div>
 
-            <!-- 3단계: 최종 확인 -->
-            <div id="step3" class="step-content hidden">
-                <div class="bg-white shadow-sm ring-1 ring-gray-900/5 rounded-lg p-6">
-                    <h2 class="text-lg font-semibold text-secondary-dark mb-4">최종 확인</h2>
-                    <div class="space-y-4">
-                        <div class="summary-item">
-                            <h3 class="text-sm font-medium text-secondary-dark">예식명</h3>
-                            <p id="summary-name" class="mt-1"></p>
-                        </div>
-                        <div class="summary-item">
-                            <h3 class="text-sm font-medium text-secondary-dark">예식 설명</h3>
-                            <p id="summary-description" class="mt-1"></p>
-                        </div>
-                        <div class="summary-item">
-                            <h3 class="text-sm font-medium text-secondary-dark">기본 가격</h3>
-                            <p id="summary-base-price" class="mt-1"></p>
-                        </div>
-                        <div class="summary-item">
-                            <h3 class="text-sm font-medium text-secondary-dark">선택된 옵션 그룹</h3>
-                            <div id="summary-options" class="mt-1 space-y-2"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- 네비게이션 버튼 -->
-            <div class="flex justify-between mt-8">
-                <button type="button" id="prevBtn" onclick="prevStep()" class="hidden px-4 py-2 text-sm font-medium text-secondary-dark bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
-                    이전
-                </button>
-                <button type="button" id="nextBtn" onclick="nextStep()" class="px-4 py-2 text-sm font-medium text-white bg-brand rounded-lg hover:bg-brand-dark">
-                    다음
-                </button>
-                <button type="submit" id="submitBtn" class="hidden px-4 py-2 text-sm font-medium text-white bg-brand rounded-lg hover:bg-brand-dark">
-                    등록하기
-                </button>
+            <div class="flex justify-between pt-5">
+                <div>
+                    <button type="button" id="prevButton" 
+                        class="hidden rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2"
+                        onclick="prevStep()">이전</button>
+                </div>
+                <div>
+                    <button type="button" id="nextButton"
+                        class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-brand py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-brand-hover focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2"
+                        onclick="nextStep()">다음</button>
+                    <button type="submit" id="submitButton"
+                        class="hidden ml-3 inline-flex justify-center rounded-md border border-transparent bg-brand py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-brand-hover focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2">
+                        등록</button>
+                </div>
             </div>
         </form>
     </div>
@@ -155,19 +197,38 @@
 
 <script>
 let currentStep = 1;
-const totalSteps = 3;
+const totalSteps = 2;
 
 function showStep(step) {
-    // Hide all steps
-    document.querySelectorAll('.step-content').forEach(el => el.classList.add('hidden'));
-    // Show current step
+    document.querySelectorAll('[id^="step"]').forEach(el => el.classList.add('hidden'));
     document.getElementById(`step${step}`).classList.remove('hidden');
     
-    // Update progress bar
+    // 이전 버튼 표시 여부
+    const prevButton = document.getElementById('prevButton');
+    prevButton.classList.toggle('hidden', step === 1);
+    
+    // 다음/제출 버튼 표시
+    const nextButton = document.getElementById('nextButton');
+    const submitButton = document.getElementById('submitButton');
+    
+    if (step === totalSteps) {
+        nextButton.classList.add('hidden');
+        submitButton.classList.remove('hidden');
+    } else {
+        nextButton.classList.remove('hidden');
+        submitButton.classList.add('hidden');
+    }
+
+    // 진행 상태 업데이트
+    updateProgress(step);
+}
+
+function updateProgress(step) {
+    // 프로그레스 바 업데이트
     const progress = ((step - 1) / (totalSteps - 1)) * 100;
     document.getElementById('progress-bar').style.width = `${progress}%`;
-    
-    // Update step indicators
+
+    // 스텝 인디케이터 업데이트
     for (let i = 1; i <= totalSteps; i++) {
         const indicator = document.getElementById(`step${i}-indicator`);
         if (i <= step) {
@@ -176,27 +237,6 @@ function showStep(step) {
         } else {
             indicator.classList.remove('bg-brand');
             indicator.classList.add('bg-gray-300');
-        }
-    }
-    
-    // Update navigation buttons
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const submitBtn = document.getElementById('submitBtn');
-    
-    prevBtn.classList.toggle('hidden', step === 1);
-    nextBtn.classList.toggle('hidden', step === totalSteps);
-    submitBtn.classList.toggle('hidden', step !== totalSteps);
-}
-
-function nextStep() {
-    if (validateCurrentStep()) {
-        if (currentStep < totalSteps) {
-            currentStep++;
-            showStep(currentStep);
-            if (currentStep === totalSteps) {
-                updateSummary();
-            }
         }
     }
 }
@@ -208,6 +248,15 @@ function prevStep() {
     }
 }
 
+function nextStep() {
+    if (validateCurrentStep()) {
+        if (currentStep < totalSteps) {
+            currentStep++;
+            showStep(currentStep);
+        }
+    }
+}
+
 function validateCurrentStep() {
     const currentStepEl = document.getElementById(`step${currentStep}`);
     const requiredFields = currentStepEl.querySelectorAll('[required]');
@@ -215,74 +264,86 @@ function validateCurrentStep() {
 
     requiredFields.forEach(field => {
         if (!field.value) {
-            field.classList.add('border-red-500');
             isValid = false;
+            field.classList.add('border-red-500');
+            
+            // 에러 메시지 표시
+            let errorDiv = field.nextElementSibling;
+            if (!errorDiv || !errorDiv.classList.contains('error-message')) {
+                errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message mt-1 text-sm text-red-500';
+                field.parentNode.insertBefore(errorDiv, field.nextSibling);
+            }
+            errorDiv.textContent = '이 필드는 필수입니다.';
         } else {
             field.classList.remove('border-red-500');
+            const errorDiv = field.nextElementSibling;
+            if (errorDiv && errorDiv.classList.contains('error-message')) {
+                errorDiv.remove();
+            }
         }
     });
 
     return isValid;
 }
 
-function updateSummary() {
-    document.getElementById('summary-name').textContent = document.getElementById('name').value;
-    document.getElementById('summary-description').textContent = document.getElementById('description').value;
-    document.getElementById('summary-base-price').textContent = parseInt(document.getElementById('base_price').value).toLocaleString() + '원';
+// 폼 제출 전 처리
+document.getElementById('serviceForm').addEventListener('submit', function(e) {
+    // 가격 처리
+    const displayPrice = document.getElementById('display_price');
+    const basePrice = document.getElementById('base_price');
+    // 콤마 제거 후 숫자만 저장
+    basePrice.value = displayPrice.value.replace(/,/g, '');
     
-    const optionsContainer = document.getElementById('summary-options');
-    optionsContainer.innerHTML = '';
-    
-    document.querySelectorAll('.option-group select').forEach(select => {
-        if (select.value) {
-            const optionDiv = document.createElement('div');
-            optionDiv.className = 'flex justify-between';
-            optionDiv.innerHTML = `
-                <span>${select.selectedOptions[0].text}</span>
-            `;
-            optionsContainer.appendChild(optionDiv);
-        }
-    });
-}
+    if (!validateCurrentStep()) {
+        e.preventDefault();
+        return;
+    }
+});
 
-// 이미지 미리보기
+// 가격 입력 필드 초기화
+document.addEventListener('DOMContentLoaded', function() {
+    const displayPrice = document.getElementById('display_price');
+    if (displayPrice.value) {
+        // 초기값이 있다면 콤마 포맷팅 적용
+        displayPrice.value = displayPrice.value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+});
+
+// 이미지 미리보기 로직
 document.getElementById('image').addEventListener('change', function(e) {
     const preview = document.getElementById('image-preview');
-    const previewImg = preview.querySelector('img');
     const file = e.target.files[0];
-    
     if (file) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            previewImg.src = e.target.result;
+            preview.innerHTML = `<img src="${e.target.result}" class="h-32 w-32 object-cover rounded-lg">`;
             preview.classList.remove('hidden');
-        }
+        };
         reader.readAsDataURL(file);
     } else {
         preview.classList.add('hidden');
     }
 });
 
-// 폼 제출 전 최종 검증
-document.getElementById('serviceForm').addEventListener('submit', function(e) {
-    if (!validateCurrentStep()) {
+// 페이지 이탈 시 경고
+window.addEventListener('beforeunload', function (e) {
+    if (document.getElementById('serviceForm').querySelector(':invalid')) {
         e.preventDefault();
-        alert('모든 필수 항목을 입력해주세요.');
+        e.returnValue = '';
     }
 });
 
-// 전화번호 자동 하이픈 추가
-document.getElementById('contact_phone').addEventListener('input', function(e) {
-    let value = e.target.value.replace(/[^0-9]/g, '');
-    if (value.length > 3 && value.length <= 7) {
-        value = value.slice(0,3) + "-" + value.slice(3);
-    } else if (value.length > 7) {
-        value = value.slice(0,3) + "-" + value.slice(3,7) + "-" + value.slice(7);
+// 가격 입력 유효성 검사
+document.getElementById('display_price').addEventListener('input', function(e) {
+    const value = parseInt(this.value.replace(/,/g, '')) || 0;
+    if (value > 100000000) {
+        this.setCustomValidity('가격은 1억원을 초과할 수 없습니다.');
+    } else if (value < 0) {
+        this.setCustomValidity('가격은 0원 미만일 수 없습니다.');
+    } else {
+        this.setCustomValidity('');
     }
-    e.target.value = value;
 });
-
-// 초기화
-showStep(1);
 </script>
 {% endblock %}

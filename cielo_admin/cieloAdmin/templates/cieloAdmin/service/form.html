@@ -1,0 +1,255 @@
+{% load humanize %}
+
+<!-- 서비스 폼 -->
+<form id="serviceForm" method="POST" enctype="multipart/form-data" class="space-y-8 divide-y divide-gray-200">
+    {% csrf_token %}
+    
+    {% if not is_edit %}
+    <!-- 진행 상태 표시 (새로 만들기에서만 표시) -->
+    <div class="mb-8">
+        <div class="relative">
+            <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-200">
+                <div id="progress-bar" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-brand transition-all duration-500" style="width: 0%"></div>
+            </div>
+            <div class="flex justify-between text-sm">
+                <div class="text-center flex flex-col items-center">
+                    <div id="step1-indicator" class="w-8 h-8 mb-2 rounded-full bg-brand text-white flex items-center justify-center font-semibold">1</div>
+                    <span>기본 정보</span>
+                </div>
+                <div class="text-center flex flex-col items-center">
+                    <div id="step2-indicator" class="w-8 h-8 mb-2 rounded-full bg-gray-300 text-white flex items-center justify-center font-semibold">2</div>
+                    <span>옵션 선택</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="space-y-8 divide-y divide-gray-200 p-6">
+        <!-- 1단계: 기본 정보 -->
+        <div id="step1" class="space-y-8 divide-y divide-gray-200">
+            <div>
+                <h3 class="text-lg font-medium leading-6 text-gray-900">기본 정보</h3>
+                <p class="mt-1 text-sm text-gray-500">예식의 기본 정보를 입력해주세요.</p>
+            </div>
+
+            <div class="pt-6">
+                <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                    <!-- 예식명 -->
+                    <div class="sm:col-span-4">
+                        <label for="name" class="block text-sm font-medium text-gray-700">
+                            예식명 <span class="text-red-500" aria-hidden="true">*</span>
+                        </label>
+                        <div class="mt-1">
+                            <input type="text" name="name" id="name" required
+                                aria-required="true"
+                                aria-describedby="name-description"
+                                maxlength="100"
+                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-brand focus:ring-brand sm:text-sm"
+                                value="{{ service.name|default:'' }}">
+                            <p class="mt-1 text-sm text-gray-500" id="name-description">
+                                예식의 고유한 이름을 입력해주세요. (최대 100자)
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 설명 -->
+                    <div class="sm:col-span-6">
+                        <label for="description" class="block text-sm font-medium text-gray-700">
+                            설명 <span class="text-red-500" aria-hidden="true">*</span>
+                        </label>
+                        <div class="mt-1">
+                            <textarea id="description" name="description" rows="4" required
+                                aria-required="true"
+                                aria-describedby="description-hint"
+                                maxlength="500"
+                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-brand focus:ring-brand sm:text-sm">{{ service.description|default:'' }}</textarea>
+                            <p class="mt-1 text-sm text-gray-500" id="description-hint">
+                                예식 서비스에 대한 상세한 설명을 입력해주세요. (최대 500자)
+                                <span class="text-xs text-right block" id="description-length">0/500</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 가격 -->
+                    <div class="sm:col-span-4">
+                        <label for="display_price" class="block text-sm font-medium text-gray-700">
+                            가격 <span class="text-red-500" aria-hidden="true">*</span>
+                        </label>
+                        <div class="mt-1">
+                            <div class="relative max-w-lg rounded-md shadow-sm sm:max-w-xs">
+                                <input type="text" id="display_price" required
+                                    aria-required="true"
+                                    aria-describedby="price-description"
+                                    min="0"
+                                    max="100000000"
+                                    class="block w-full rounded-md border-gray-300 pr-12 focus:border-brand focus:ring-brand sm:text-sm"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                                    value="{{ service.base_price|default:''|intcomma }}">
+                                <input type="hidden" name="base_price" id="base_price" value="{{ service.base_price|default:'' }}">
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                    <span class="text-gray-500 sm:text-sm">원</span>
+                                </div>
+                            </div>
+                            <p class="mt-1 text-sm text-gray-500" id="price-description">
+                                0원에서 1억원 사이의 금액을 입력해주세요.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 상태 -->
+                    <div class="sm:col-span-3">
+                        <label for="status" class="block text-sm font-medium text-gray-700">
+                            상태 <span class="text-red-500" aria-hidden="true">*</span>
+                        </label>
+                        <div class="mt-1">
+                            <select id="status" name="status" required
+                                aria-required="true"
+                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-brand focus:ring-brand sm:text-sm">
+                                <option value="active" {% if service.status == 'active' %}selected{% endif %}>활성</option>
+                                <option value="inactive" {% if service.status == 'inactive' %}selected{% endif %}>비활성</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2단계: 옵션 선택 -->
+        <div id="step2" class="{% if not is_edit %}step-content hidden{% endif %}">
+            <div class="space-y-8 pt-6">
+                <div>
+                    <h3 class="text-lg font-medium leading-6 text-gray-900">옵션 선택</h3>
+                    <p class="mt-1 text-sm text-gray-500">예식에 포함될 옵션들을 선택해주세요.</p>
+                </div>
+
+                <!-- 옵션 목록 -->
+                <div class="space-y-4">
+                    {% for option in options %}
+                    <div class="relative flex items-start">
+                        <div class="flex items-center h-5">
+                            <input type="checkbox" name="options" value="{{ option.id }}"
+                                class="h-4 w-4 text-brand border-gray-300 rounded focus:ring-brand"
+                                {% if option.id in service.options %}checked{% endif %}>
+                        </div>
+                        <div class="ml-3 text-sm">
+                            <label for="option_{{ option.id }}" class="font-medium text-gray-700">{{ option.name }}</label>
+                            <p class="text-gray-500">{{ option.description }}</p>
+                        </div>
+                        <div class="ml-auto">
+                            <span class="text-sm font-medium text-gray-900">{{ option.price|intcomma }}원</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 하단 버튼 -->
+    <div class="pt-5 px-6 pb-6">
+        <div class="flex justify-end space-x-3">
+            {% if not is_edit %}
+            <button type="button" onclick="prevStep()"
+                class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
+                이전
+            </button>
+            <button type="button" onclick="nextStep()"
+                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-brand hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
+                다음
+            </button>
+            {% endif %}
+            <button type="submit"
+                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-brand hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
+                {{ submit_text|default:"등록" }}
+            </button>
+        </div>
+    </div>
+</form>
+
+<script>
+{% if not is_edit %}
+let currentStep = 1;
+const totalSteps = 2;
+
+function showStep(step) {
+    document.querySelectorAll('.step-content').forEach(el => el.classList.add('hidden'));
+    document.getElementById(`step${step}`).classList.remove('hidden');
+    updateProgress(step);
+}
+
+function updateProgress(step) {
+    const progressBar = document.getElementById('progress-bar');
+    const progress = ((step - 1) / (totalSteps - 1)) * 100;
+    progressBar.style.width = `${progress}%`;
+
+    // 인디케이터 업데이트
+    for (let i = 1; i <= totalSteps; i++) {
+        const indicator = document.getElementById(`step${i}-indicator`);
+        if (i <= step) {
+            indicator.classList.remove('bg-gray-300');
+            indicator.classList.add('bg-brand');
+        } else {
+            indicator.classList.remove('bg-brand');
+            indicator.classList.add('bg-gray-300');
+        }
+    }
+}
+
+function prevStep() {
+    if (currentStep > 1) {
+        currentStep--;
+        showStep(currentStep);
+    }
+}
+
+function nextStep() {
+    if (validateCurrentStep() && currentStep < totalSteps) {
+        currentStep++;
+        showStep(currentStep);
+    }
+}
+
+function validateCurrentStep() {
+    const step1Fields = ['name', 'description', 'display_price'];
+    
+    if (currentStep === 1) {
+        let valid = true;
+        step1Fields.forEach(field => {
+            const element = document.getElementById(field);
+            if (!element.checkValidity()) {
+                element.reportValidity();
+                valid = false;
+            }
+        });
+        return valid;
+    }
+    return true;
+}
+{% endif %}
+
+// 폼 제출 전 처리
+document.getElementById('serviceForm').addEventListener('submit', function(e) {
+    // 가격 처리
+    const displayPrice = document.getElementById('display_price');
+    const basePrice = document.getElementById('base_price');
+    basePrice.value = displayPrice.value.replace(/,/g, '');
+});
+
+// 설명 글자수 카운터
+const description = document.getElementById('description');
+const descriptionLength = document.getElementById('description-length');
+
+function updateDescriptionLength() {
+    const length = description.value.length;
+    descriptionLength.textContent = `${length}/500`;
+    if (length > 450) {
+        descriptionLength.classList.add('text-red-500');
+    } else {
+        descriptionLength.classList.remove('text-red-500');
+    }
+}
+
+description.addEventListener('input', updateDescriptionLength);
+updateDescriptionLength(); // 초기 로드 시 실행
+</script>

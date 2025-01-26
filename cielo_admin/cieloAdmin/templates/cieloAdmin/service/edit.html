@@ -1,0 +1,199 @@
+{% extends 'cieloAdmin/base.html' %}
+{% load humanize %}
+
+{% block title %}예식 수정 - 반려동물 장례 서비스 관리자{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- 페이지 헤더 -->
+    <header class="bg-white shadow">
+        <div class="max-w-7xl mx-auto py-4 sm:py-6 px-4 sm:px-6 lg:px-8">
+            <div class="md:flex md:items-center md:justify-between">
+                <div class="flex-1 min-w-0">
+                    <h2 class="text-2xl font-semibold text-secondary-dark">예식 수정</h2>
+                    <p class="mt-1 text-sm text-gray-500">예식 ID: {{ service.id }}</p>
+                </div>
+                <div class="mt-4 flex md:mt-0 md:ml-4 space-x-3">
+                    <button type="button" onclick="location.href='{% url 'cieloAdmin:service_list' %}'"
+                        class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand">
+                        <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
+                        </svg>
+                        목록으로
+                    </button>
+                    <button type="button" onclick="showDeleteModal()"
+                        class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        삭제
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto py-4 sm:py-6 px-4 sm:px-6 lg:px-8">
+        <div class="bg-white shadow rounded-lg">
+            <!-- 로딩 인디케이터 -->
+            <div id="loading-indicator" class="hidden">
+                <div class="flex justify-center items-center h-32">
+                    <svg class="animate-spin h-8 w-8 text-brand" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- 폼 컨테이너 -->
+            <div id="form-container">
+                {% include 'cieloAdmin/service/form.html' with submit_text="수정" is_edit=True %}
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- 삭제 확인 모달 -->
+<div id="deleteModal" class="hidden fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <!-- 배경 오버레이 -->
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        
+        <!-- 모달 내용 -->
+        <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="modal-title">
+            <div class="sm:flex sm:items-start">
+                <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                    <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">예식 삭제</h3>
+                    <div class="mt-2">
+                        <p class="text-sm text-gray-500">
+                            정말 이 예식을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                <button type="button" onclick="confirmDelete()"
+                    class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                    삭제
+                </button>
+                <button type="button" onclick="hideDeleteModal()"
+                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand sm:mt-0 sm:w-auto sm:text-sm">
+                    취소
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_scripts %}
+<script>
+// 폼 데이터 변경 감지
+let formChanged = false;
+document.getElementById('serviceForm').addEventListener('change', function() {
+    formChanged = true;
+});
+
+// 페이지 이탈 시 경고
+window.addEventListener('beforeunload', function (e) {
+    if (formChanged) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+
+// 삭제 모달 관련 함수들
+function showDeleteModal() {
+    const modal = document.getElementById('deleteModal');
+    modal.classList.remove('hidden');
+    
+    // 모달이 표시되면 첫 번째 포커스 가능한 버튼에 포커스
+    const firstButton = modal.querySelector('button');
+    if (firstButton) firstButton.focus();
+    
+    // 모달 내에서 포커스 트랩 설정
+    setupFocusTrap(modal);
+}
+
+function hideDeleteModal() {
+    document.getElementById('deleteModal').classList.add('hidden');
+}
+
+function confirmDelete() {
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const formContainer = document.getElementById('form-container');
+    
+    loadingIndicator.classList.remove('hidden');
+    formContainer.classList.add('hidden');
+    
+    fetch(`/admin/service/{{ service.id }}/delete/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+    }).then(response => {
+        if (response.ok) {
+            window.location.href = "{% url 'cieloAdmin:service_list' %}";
+        } else {
+            loadingIndicator.classList.add('hidden');
+            formContainer.classList.remove('hidden');
+            alert('삭제 중 오류가 발생했습니다.');
+            hideDeleteModal();
+        }
+    });
+}
+
+// 포커스 트랩 설정
+function setupFocusTrap(modal) {
+    const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    const firstFocusableElement = focusableElements[0];
+    const lastFocusableElement = focusableElements[focusableElements.length - 1];
+
+    modal.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            hideDeleteModal();
+        }
+        
+        if (e.key === 'Tab') {
+            if (e.shiftKey) {
+                if (document.activeElement === firstFocusableElement) {
+                    lastFocusableElement.focus();
+                    e.preventDefault();
+                }
+            } else {
+                if (document.activeElement === lastFocusableElement) {
+                    firstFocusableElement.focus();
+                    e.preventDefault();
+                }
+            }
+        }
+    });
+}
+
+// ESC 키로 모달 닫기
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        hideDeleteModal();
+    }
+});
+
+// 페이지 로드 시 실행
+document.addEventListener('DOMContentLoaded', function() {
+    // 폼이 로드되면 로딩 인디케이터 숨기기
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const formContainer = document.getElementById('form-container');
+    
+    loadingIndicator.classList.add('hidden');
+    formContainer.classList.remove('hidden');
+});
+</script>
+{% endblock extra_scripts %}
+{% endblock content %}
